@@ -58,13 +58,35 @@ h2/f2
 
 # build confidence interval
 
-r1 <- rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+f1-h1)
-r2 <- rbeta(n=1e7,shape1=1/2+h2,shape2=1/2+f2-h2)
+r1 <- rbeta(n=1e5,shape1=1/2+h1,shape2=1/2+f1-h1)
+r2 <- rbeta(n=1e5,shape1=1/2+h2,shape2=1/2+f2-h2)
 hist(r2-r1)
 quantile(r2-r1,c(0.025,0.975))
 ```
 
 ##### Script #2
+
+```R
+set.seed(381)
+
+trap <- vector()
+
+for(i in 1:3000){
+  x1 <- rbinom(n=1,size=22,p=0.5)
+  x2 <- rbinom(n=1,size=31,p=0.5)
+  r1 <- rbeta(n=1e5,shape1=1/2+x1,shape2=1/2+22-x1)
+  r2 <- rbeta(n=1e5,shape1=1/2+x2,shape2=1/2+31-x2)
+  d <- r2-r1
+  lcl.d <- quantile(d,0.025)
+  ucl.d <- quantile(d,0.975)
+  trap[i] <- ifelse(lcl.d<0 & ucl.d>0,1,0)
+  }
+
+table(trap)
+mean(trap)
+```
+
+##### Script #3
 
 ```R
 set.seed(433)
@@ -83,8 +105,8 @@ h2/p2*100000
 
 # build confidence interval
 
-r1 <- 100000*rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+p1-h1)
-r2 <- 100000*rbeta(n=1e7,shape1=1/2+h2,shape2=1/2+p2-h2)
+r1 <- 100000*rbeta(n=1e5,shape1=1/2+h1,shape2=1/2+p1-h1)
+r2 <- 100000*rbeta(n=1e5,shape1=1/2+h2,shape2=1/2+p2-h2)
 hist(r2-r1)
 quantile(r2-r1,c(0.025,0.975))
 ```
