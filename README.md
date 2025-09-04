@@ -17,7 +17,7 @@
 #### Course Outline
 
 1. syllabus review and R primer (comparing homicide rates of 2 cities)
-2. review of point estimation and confidence intervals (Weisburd and Britt, Chapter 20)
+2. review of point estimation and confidence intervals
 3. state-level changes in homicide rates
 
 exam 1 (Thursday 10/16)
@@ -37,20 +37,44 @@ exam 3 (TBA)
 
 #### R Code for Thursday 9/4/25
 
+* Larry Wasserman's R primer ([link](https://www.stat.cmu.edu/~larry/all-of-statistics/=R/Rintro.pdf)).
 * Brown et al., (2001; [link](https://projecteuclid.org/journals/statistical-science/volume-16/issue-2/Interval-Estimation-for-a-Binomial-Proportion/10.1214/ss/1009213286.full)).
 * chapter 20 of Weisburd and Britt (2007; [link](https://link.springer.com/book/10.1007/978-0-387-34113-2)).
 
-```R
-# st. louis 2022
+##### Script #1
 
-h1 <- 100
-p1 <- 286053
+```R
+# coin 1
+
+h1 <- 12
+f1 <- 22
+h1/f1
+
+# coin 2
+
+h2 <- 15
+f2 <- 31
+h2/f2
+
+r1 <- rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+f1-h1)
+r2 <- rbeta(n=1e7,shape1=1/2+h2,shape2=1/2+f2-h2)
+hist(r2-r1)
+quantile(r2-r1,c(0.025,0.975))
+```
+
+##### Script #2
+
+```R
+# st. louis 2024
+
+h1 <- 150
+p1 <- 277294
 h1/p1*100000
 
-# washington dc 2022
+# washington dc 2024
 
-h2 <- 204
-p2 <- 671803
+h2 <- 179
+p2 <- 702250
 h2/p2*100000
 
 r1 <- 100000*rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+p1-h1)
