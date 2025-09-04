@@ -56,6 +56,8 @@ h2 <- 15
 f2 <- 31
 h2/f2
 
+# build confidence interval
+
 r1 <- rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+f1-h1)
 r2 <- rbeta(n=1e7,shape1=1/2+h2,shape2=1/2+f2-h2)
 hist(r2-r1)
@@ -78,6 +80,8 @@ h1/p1*100000
 h2 <- 179
 p2 <- 702250
 h2/p2*100000
+
+# build confidence interval
 
 r1 <- 100000*rbeta(n=1e7,shape1=1/2+h1,shape2=1/2+p1-h1)
 r2 <- 100000*rbeta(n=1e7,shape1=1/2+h2,shape2=1/2+p2-h2)
