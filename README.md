@@ -65,6 +65,8 @@ quantile(r2-r1,c(0.025,0.975))
 ##### Script #2
 
 ```R
+set.seed(433)
+
 # st. louis 2024
 
 h1 <- 150
