@@ -30,7 +30,7 @@ exam 1 (Thursday 10/16)
 exam 2 (Thursday 11/20)
 
 8. measuring the association between static risk factors and recidivism
-9. observational studies of treatment effects
+9. observational studies of treatment effects with limited dv outcomes
 10. seat belts and injuries in car crashes
  
 exam 3 (TBA)
