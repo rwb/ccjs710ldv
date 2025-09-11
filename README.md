@@ -114,4 +114,5 @@ quantile(r2-r1,c(0.025,0.975))
 #### R Code for Thursday 9/11/25
 
 * Let's begin by supposing that there is a population of persons released from prison in the United States in any given year.
+* Now, let's further suppose that the recidivism rate for people in this population is 67.5% (i.e., the population parameter).
 * 
