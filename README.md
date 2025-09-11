@@ -113,10 +113,68 @@ quantile(r2-r1,c(0.025,0.975))
 
 #### R Code for Thursday 9/11/25
 
+* This is mostly based on the material on pages 615-615 of WB.
 * Let's begin by supposing that there is a population of persons released from prison in the United States in any given year.
 * Now, let's further suppose that the recidivism rate for people in this population is 67.5% (i.e., the population parameter).
+* If we draw simple random samples from this population and estimate the recidivism rate in each sample, we should get estimates that are *close* to the population parameter value.
+* Here is an example:
 
 <p align="center">
 <img src="/gfiles/fig1.png" width="750px">
 </p>
 
+* Let's look at a single sample:
+
+```R
+set.seed(602)
+u <- runif(n=50,min=0,max=1)
+y <- ifelse(u>0.675,0,1)
+table(y,exclude=NULL)
+```
+
+* How should we use the information in the sample to estimate the population recidivism rate?
+
+```R
+N <- length(y)
+N
+1/N*sum(y)
+mean(y)
+```
+
+* How can we calculate the standard error of this estimate?
+
+```
+N <- length(y)
+N
+p <- mean(y)
+p
+q <- 1-p
+q
+std.err <- sqrt(p*q/N)
+std.err
+```
+
+* How could we obtain a 93% confidence interval for this estimate?
+* We *consider* the idea of a sampling distribution of proportions.
+* We *assume* that the standardized version of this sampling distribution can be approximated by the standard normal distribution.
+* Next, we find the 3.5th and 96.5th percentiles of this normal distribution.
+
+```R
+qnorm(p=0.035)
+qnorm(p=0.965)
+```
+
+* So, the 93% confidence interval for the sample proportion is:
+
+```R
+lower.limit <- p-1.811911*std.err
+lower.limit
+upper.limit <- p+1.811911*std.err
+upper.limit
+```
+
+* Does the interval include the true population parameter value of 0.675?
+* If so, the confidence interval "trapped" the true population value; if not, it didn't.
+* Notice that whether a population parameter value is trapped is a yes or no question.
+* Interpretation: if this is a valid procedure for calculating a 93% confidence interval, then if we drew many thousands of samples and used this same procedure to calculate the 93% confidence interval for each sample, then 93% of the sample intervals would contain the true population parameter value.
+* How do we know whether it is valid?
