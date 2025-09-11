@@ -35,6 +35,8 @@ exam 2 (Thursday 11/20)
  
 exam 3 (TBA)
 
+---
+
 #### R Code for Thursday 9/4/25
 
 * Larry Wasserman's R primer ([link](https://www.stat.cmu.edu/~larry/all-of-statistics/=R/Rintro.pdf)).
@@ -110,6 +112,8 @@ r2 <- 100000*rbeta(n=1e5,shape1=1/2+h2,shape2=1/2+p2-h2)
 hist(r2-r1)
 quantile(r2-r1,c(0.025,0.975))
 ```
+
+---
 
 #### R Code for Thursday 9/11/25
 
