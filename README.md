@@ -178,3 +178,61 @@ upper.limit
 * Notice that whether a population parameter value is trapped is a yes or no question.
 * Interpretation: if this is a valid procedure for calculating a 93% confidence interval, then if we drew many thousands of samples and used this same procedure to calculate the 93% confidence interval for each sample, then 93% of the sample intervals would contain the true population parameter value.
 * How do we know whether it is valid?
+
+```R
+trap <- vector()
+
+for(i in 1:1e5){
+  u <- runif(n=50,min=0,max=1)
+  y <- ifelse(u>0.675,0,1)
+  N <- length(y)
+  p <- mean(y)
+  q <- 1-p
+  std.err <- sqrt(p*q/N)
+  lower.limit <- p-1.811911*std.err
+  upper.limit <- p+1.811911*std.err
+  trap[i] <- ifelse(lower.limit<0.675 & upper.limit>0.675,1,0)
+  }
+
+table(trap,exclude=NULL)
+```
+
+* Everything looks reasonable here.
+* Now, let's consider a different case.
+* Suppose there is a population of 18 year olds and that 90.3% of them would acknowledge involvement in at least one act that could be considered to be an act of "delinquency" within the past 3 years -- if they were asked about it in a survey. So, this is a population value.
+* Let's draw samples of size 80 and see whether the procedure is valid.
+* How would you modify the code above to check on whether the 93% confidence interval procedure still works as it should?
+* What is the *coverage rate* of the confidence interval for this example?
+* What else could we do?
+* Let's consider our prison release and recidivism example from earlier.
+* Instead of assuming that the sample p's come from a normal sampling distribution (think about how reasonable that is), let's assume that the sample p's come from a beta sampling distribution (this is from the Brown et al. paper, p. 113).
+
+```R
+trap <- vector()
+
+for(i in 1:1e5){
+  u <- runif(n=50,min=0,max=1)
+  y <- ifelse(u>0.675,0,1)
+  sy <- sum(y)
+  N <- length(y)
+  lower.limit <- qbeta(p=0.035,shape1=sy,shape2=1+N-sy)
+  upper.limit <- qbeta(p=0.965,shape1=1+sy,shape2=N-sy)
+  trap[i] <- ifelse(lower.limit<0.675 & upper.limit>0.675,1,0)
+  }
+
+table(trap,exclude=NULL)
+```
+
+* This interval is called the Clopper-Pearson or *exact* interval.
+* Let's apply the CP interval to the juvenile delinquency example. What is its coverage rate?
+* Next, we remind ourselves that these are simulations to check coverage rates.
+* Let's consider the single sample from our population of people released from prison.
+* Recall that we had 37 people who recidivated and 13 people who didn't.
+* This implies a sample estimated recidivism rate of 74%.
+* The 93% confidence interval (based on the normal distribution) around this estimate is [0.628,0.852].
+* What is the 93% confidence interval based on the Clopper-Pearson procedure?
+* Compare the widths of the 2 confidence intervals in the single sample. What do you see?
+* Now, consider a single sample of N = 80 18-year-olds who are asked about the delinquency involvement over the previous 3 years; for this sample, we observe that 71 of the 80 people acknowledged they had engaged in delinquency while 9 said they had not.
+* What is the normal 95% confidence interval for this sample?
+* What is the Clopper-Pearson 95% confidence interval for this sample?
+* Compare the widths of the 2 confidence intervals. What do you see?
