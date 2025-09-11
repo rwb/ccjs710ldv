@@ -236,3 +236,17 @@ table(trap,exclude=NULL)
 * What is the normal 95% confidence interval for this sample?
 * What is the Clopper-Pearson 95% confidence interval for this sample?
 * Compare the widths of the 2 confidence intervals. What do you see?
+* Note that there is yet another option called the equal-tailed Jeffreys interval.
+* Let's calculate the Jeffreys interval for our prison release/recidivism example dataset:
+
+```R
+N <- 50
+sy <- 37
+lower.limit <- qbeta(p=0.035,shape1=1/2+sy,shape2=1/2+N-sy)
+lower.limit
+upper.limit <- qbeta(p=0.965,shape1=1/2+sy,shape2=1/2+N-sy)
+upper.limit
+```
+
+* Check on the coverage of this interval for both the prison release/recidivism and 18-year-old delinquency problems.
+* What do you conclude?
