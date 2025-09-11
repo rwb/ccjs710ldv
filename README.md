@@ -113,7 +113,6 @@ quantile(r2-r1,c(0.025,0.975))
 
 #### R Code for Thursday 9/11/25
 
-* This is mostly based on the material on pages 615-615 of WB.
 * Let's begin by supposing that there is a population of persons released from prison in the United States in any given year.
 * Now, let's further suppose that the recidivism rate for people in this population is 67.5% (i.e., the population parameter).
 * If we draw simple random samples from this population and estimate the recidivism rate in each sample, we should get estimates that are *close* to the population parameter value.
@@ -176,6 +175,8 @@ upper.limit
 * Does the interval include the true population parameter value of 0.675?
 * If so, the confidence interval "trapped" the true population value; if not, it didn't.
 * Notice that whether a population parameter value is trapped is a yes or no question.
+
+---
 * Interpretation: if this is a valid procedure for calculating a 93% confidence interval, then if we drew many thousands of samples and used this same procedure to calculate the 93% confidence interval for each sample, then 93% of the sample intervals would contain the true population parameter value.
 * How do we know whether it is valid?
 
@@ -396,6 +397,7 @@ for(i in 1:1e5){
 table(trap)
 ```
 
+---
 * Try the above exercises with this new dataset comprised of the 1980 age-at-release data from the NC Department of Corrections:
 
 ```R
