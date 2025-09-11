@@ -110,3 +110,8 @@ r2 <- 100000*rbeta(n=1e5,shape1=1/2+h2,shape2=1/2+p2-h2)
 hist(r2-r1)
 quantile(r2-r1,c(0.025,0.975))
 ```
+
+#### R Code for Thursday 9/11/25
+
+* Let's begin by supposing that there is a population of persons released from prison in the United States in any given year.
+* 
