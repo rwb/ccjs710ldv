@@ -181,23 +181,29 @@ upper.limit
 
 ```R
 trap <- vector()
+pvec <- vector()
 
 for(i in 1:1e5){
   u <- runif(n=50,min=0,max=1)
   y <- ifelse(u>0.675,0,1)
   N <- length(y)
-  p <- mean(y)
-  q <- 1-p
-  std.err <- sqrt(p*q/N)
-  lower.limit <- p-1.811911*std.err
-  upper.limit <- p+1.811911*std.err
+  pvec[i] <- mean(y)
+  q <- 1-pvec[i]
+  std.err <- sqrt(pvec[i]*q/N)
+  lower.limit <- pvec[i]-1.811911*std.err
+  upper.limit <- pvec[i]+1.811911*std.err
   trap[i] <- ifelse(lower.limit<0.675 & upper.limit>0.675,1,0)
   }
 
 table(trap,exclude=NULL)
+hist(pvec)
 ```
 
 * Everything looks reasonable here.
+* Central limit theorem?
+  
+---
+
 * Now, let's consider a different case.
 * Suppose there is a population of 18 year olds and that 90.3% of them would acknowledge involvement in at least one act that could be considered to be an act of "delinquency" within the past 3 years -- if they were asked about it in a survey. So, this is a population value.
 * Let's draw samples of size 80 and see whether the procedure is valid.
@@ -236,6 +242,9 @@ table(trap,exclude=NULL)
 * What is the normal 95% confidence interval for this sample?
 * What is the Clopper-Pearson 95% confidence interval for this sample?
 * Compare the widths of the 2 confidence intervals. What do you see?
+
+---
+
 * Note that there is yet another option called the equal-tailed Jeffreys interval.
 * Let's calculate the Jeffreys interval for our prison release/recidivism example dataset:
 
@@ -250,3 +259,139 @@ upper.limit
 
 * Check on the coverage of this interval for both the prison release/recidivism and 18-year-old delinquency problems.
 * What do you conclude?
+
+---
+
+* Now, let's consider a new example. The following dataset contains the entire population of people released from prison in NC for fiscal year 1978; for each person, the age at the time of release from prison is recorded.
+
+```R
+age <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
+  rep(21,599),rep(22,580),rep(23,468),rep(24,537),rep(25,443),rep(26,432),
+  rep(27,338),rep(28,415),rep(29,292),rep(30,324),rep(31,254),rep(32,234),
+  rep(33,179),rep(34,187),rep(35,167),rep(36,177),rep(37,132),rep(38,152),
+  rep(39,117),rep(40,119),rep(41,93),rep(42,113),rep(43,102),rep(44,85),
+  rep(45,75),rep(46,90),rep(47,72),rep(48,86),rep(49,62),rep(50,78),
+  rep(51,61),rep(52,57),rep(53,50),rep(54,44),rep(55,49),rep(56,55),
+  rep(57,34),rep(58,34),rep(59,25),rep(60,21),rep(61,18),rep(62,19),
+  rep(63,11),rep(64,16),rep(65,7),rep(66,5),rep(67,13),rep(68,5),rep(69,3),
+  rep(70,1),rep(71,3),rep(72,5),rep(73,3),rep(74,4),rep(75,2),rep(77,2),rep(78,2))
+
+N <- length(age)
+N
+```
+
+* Let's create a chart.
+
+```R
+barplot(table(age),
+  xlab="Age (in years) at Time of Release",
+  ylab="Number of People",
+ main="Age at Release from Prison (1978 NCDOC)")
+```
+
+* Since the data are skewed, we might expect the mean and the median to be different.
+* Which one should be greater?
+
+```R
+mean(age)
+median(age)
+```
+
+* Let's repeatedly sample from this population to see the Central Limit Theorem in action:
+
+```R
+mna <- vector()
+mda <- vector()
+
+for(i in 1:1e5){
+  s <- sample(1:N,size=300,replace=T)
+  sa <- age[s]
+  mna[i] <- mean(sa)
+  mda[i] <- median(sa)
+  }
+
+par(mfrow=c(1,3))
+hist(mna)
+hist(mda)
+boxplot(mna,mda)
+mean(mna)
+sd(mna)
+```
+
+* Now, let's work with 3 individual samples from this population:
+
+```R
+s <- sample(1:N,size=300,replace=T)
+ys <- age[s]
+mean(ys)
+sd(ys)/sqrt(300)
+
+s <- sample(1:N,size=300,replace=T)
+ys <- age[s]
+mean(ys)
+sd(ys)/sqrt(300)
+
+s <- sample(1:N,size=300,replace=T)
+ys <- age[s]
+mean(ys)
+sd(ys)/sqrt(300)
+```
+
+* Then, we draw a sample of size N = 35 and calculate a 90% confidence interval.
+
+```R
+s <- sample(1:N,size=35,replace=T)
+ys <- age[s]
+mean(ys)
+std.err <- sd(ys)/sqrt(35)
+std.err
+qt(p=0.05,df=35-1)
+qt(p=0.95,df=35-1)
+lower.limit <- mean(ys)-1.690924*std.err
+lower.limit
+upper.limit <- mean(ys)+1.690924*std.err
+upper.limit
+```
+
+* Did the 90% confidence interval trap the true population parameter value?
+* Now, let's repeatedly sample with samples of size N = 20 and check on the coverage rate for this procedure.
+
+```R
+qt(p=0.05,df=20-1)
+qt(p=0.95,df=20-1)
+
+trap <- vector()
+
+for(i in 1:1e5){
+  s <- sample(1:N,size=20,replace=T)
+  ys <- age[s]
+  std.err <- sd(ys)/sqrt(20)
+  lower.limit <- mean(ys)-1.729133*std.err
+  upper.limit <- mean(ys)+1.729133*std.err
+  trap[i] <- ifelse(lower.limit<29.32787 & upper.limit>29.32787,1,0)
+  }
+
+table(trap)
+```
+
+* What happens if we increase the sample size to 300?
+
+```R
+qt(p=0.05,df=300-1)
+qt(p=0.95,df=300-1)
+qnorm(p=0.05)
+qnorm(p=0.95)
+
+trap <- vector()
+
+for(i in 1:1e5){
+  s <- sample(1:N,size=300,replace=T)
+  ys <- age[s]
+  std.err <- sd(ys)/sqrt(300)
+  lower.limit <- mean(ys)-1.649966*std.err
+  upper.limit <- mean(ys)+1.649966*std.err
+  trap[i] <- ifelse(lower.limit<29.32787 & upper.limit>29.32787,1,0)
+  }
+
+table(trap)
+```
