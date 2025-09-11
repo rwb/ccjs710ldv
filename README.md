@@ -395,3 +395,18 @@ for(i in 1:1e5){
 
 table(trap)
 ```
+
+* Try the above exercises with this new dataset comprised of the 1980 age-at-release data from the NC Department of Corrections:
+
+```R
+age <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
+  rep(21,517),rep(22,601),rep(23,516),rep(24,565),rep(25,407),rep(26,495),
+  rep(27,302),rep(28,397),rep(29,291),rep(30,298),rep(31,261),rep(32,330),
+  rep(33,224),rep(34,231),rep(35,163),rep(36,194),rep(37,157),rep(38,149),
+  rep(39,125),rep(40,129),rep(41,116),rep(42,100),rep(43,88),rep(44,105),
+  rep(45,88),rep(46,80),rep(47,72),rep(48,60),rep(49,68),rep(50,67),
+  rep(51,64),rep(52,50),rep(53,47),rep(54,51),rep(55,47),rep(56,42),
+  rep(57,28),rep(58,39),rep(59,12),rep(60,29),rep(61,12),rep(62,13),
+  rep(63,8),rep(64,19),rep(65,12),rep(66,9),rep(67,2),rep(68,5),rep(69,3),
+  rep(70,6),rep(71,1),rep(73,2),rep(74,2),rep(75,1),rep(77,1),rep(79,1))
+```
