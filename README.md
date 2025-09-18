@@ -466,3 +466,74 @@ ys <- age[s]
 mean(ys)
 sd(ys)/sqrt(300)
 ```
+
+##### Script #2
+
+* Now, let's consider a sample of size N = 35 and the 92% confidence interval for the mean age.
+
+```R
+s <- sample(1:N,size=35,replace=T)
+ys <- age[s]
+mean(ys)
+std.err <- sd(ys)/sqrt(35)
+std.err
+qt(p=0.04,df=35-1)
+qt(p=0.96,df=35-1)
+lower.limit <- mean(ys)-1.80461*std.err
+lower.limit
+upper.limit <- mean(ys)+1.80461*std.err
+upper.limit
+```
+* Did we trap the true population parameter value?
+
+##### Script #3
+
+* Let's draw repeated samples of size N = 15 from the population and calculate 93% confidence intervals in each sample.
+
+```R
+qt(p=0.035,df=15-1)
+qt(p=0.965,df=15-1)
+
+trap <- vector()
+
+for(i in 1:1e5){
+  s <- sample(1:N,size=15,replace=T)
+  ys <- age[s]
+  std.err <- sd(ys)/sqrt(15)
+  lower.limit <- mean(ys)-1.961656*std.err
+  upper.limit <- mean(ys)+1.961656*std.err
+  trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
+  }
+
+table(trap)
+```
+
+* What fraction of the confidence intervals contained the true population parameter?
+* Does this confidence interval undercover or overcover?
+
+##### Script #4
+
+* Let's draw repeated samples of size N = 200 from the population and calculate 91% confidence intervals in each sample.
+
+```R
+qt(p=0.045,df=200-1)
+qt(p=0.955,df=200-1)
+
+trap <- vector()
+
+for(i in 1:1e5){
+  s <- sample(1:N,size=200,replace=T)
+  ys <- age[s]
+  std.err <- sd(ys)/sqrt(200)
+  lower.limit <- mean(ys)-1.70369*std.err
+  upper.limit <- mean(ys)+1.70369*std.err
+  trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
+  }
+
+table(trap)
+```
+
+* What fraction of the confidence intervals contained the true population parameter?
+* Does this confidence interval undercover or overcover?
+
+##### Script #5
