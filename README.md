@@ -427,19 +427,163 @@ age <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
 
 ##### Review Time
 
-* You are given a sample of 380 people who were all released from prison 3 years ago.
+* You are given a random sample of 380 people who were all released from prison 3 years ago.
 * Each of these people has been followed up and we have determined that 237 of them "failed" or "recidivated."
 * Calculate the sample estimate of the recidivism rate.
 * Calculate a 93% confidence interval for the recidivism rate using the normal approximation to the binomial or Wald formula.
 * Calculate a 93% confidence interval for the recidivism rate using the Clopper-Pearson approach.
 * Calculate a 93% confidence interval using the Jeffreys prior approach.
 * What should we consider when making a decision about which interval to report?
-* Conduct a coverage rate analysis for each of the 3 intervals. How does this affect your decision about which interval to report?
+* Conduct a coverage rate analysis for each of the 3 intervals with the knowledge that the population recidivism rate is 65%. How does this affect your decision about which interval to report?
 
- ```R
+```R
+trials <- 380
+events <- 237
 
+recidivism.rate <- events/trials
+recidivism.rate
 
-* We begin by working with the dataset we studied at the end of last week's class.
+# normal approximation to binomial/Wald (discussed in WB)
+
+p <- recidivism.rate
+p
+q <- 1-p
+q
+se.p <- sqrt(p*q/trials)
+se.p
+
+qnorm(p=0.035)
+qnorm(p=0.965)
+
+lcl <- p-1.811911*se.p
+lcl
+ucl <- p+1.811911*se.p
+ucl
+
+# Clopper-Pearson approach (discussed in the Brown paper)
+
+lcl <- qbeta(p=0.035,shape1=events,shape2=1+trials-events)
+lcl
+ucl <- qbeta(p=0.965,shape1=1+events,shape2=trials-events)
+ucl
+
+# Jeffreys prior approach (discussed in the Brown paper)
+
+lcl <- qbeta(p=0.035,shape1=1/2+events,shape2=1/2+trials-events)
+lcl
+ucl <- qbeta(p=0.965,shape1=1/2+events,shape2=1/2+trials-events)
+ucl
+```
+
+---
+
+* Now, we check on the actual performance of the 3 different types of confidence intervals.
+
+```R
+# simulate 100,000 datasets
+
+pop.p <- 0.65
+trials <- 380
+
+events <- vector()
+
+for(i in 1:1e5){
+  events[i] <- rbinom(n=1,size=trials,p=pop.p)
+  }
+
+events[1:12]
+events[99995:100000]
+
+# calculate normal approximation to binomial confidence intervals (93%)
+# and trap rate
+
+qnorm(p=0.035)
+z <- qnorm(p=0.965)
+z
+
+p.est <- events/trials
+hist(p.est)
+q.est <- 1-p.est
+se.p <- sqrt(p.est*q.est/trials)
+lcl.na <- p.est-z*se.p
+ucl.na <- p.est+z*se.p
+trap.na <- ifelse(lcl.na<pop.p & ucl.na>pop.p,1,0)
+table(trap.na)
+
+# calculate clopper-pearson confidence intervals
+# and trap rate
+
+lcl.cp <- qbeta(p=0.035,shape1=events,shape2=1+trials-events)
+ucl.cp <- qbeta(p=0.965,shape1=1+events,shape2=trials-events)
+trap.cp <- ifelse(lcl.cp<pop.p & ucl.cp>pop.p,1,0)
+table(trap.cp)
+
+# calculate jeffreys prior confidence intervals
+# and trap rate
+
+lcl.jp <- qbeta(p=0.035,shape1=1/2+events,shape2=1/2+trials-events)
+ucl.jp <- qbeta(p=0.965,shape1=1/2+events,shape2=1/2+trials-events)
+trap.jp <- ifelse(lcl.jp<pop.p & ucl.jp>pop.p,1,0)
+table(trap.jp)
+```
+
+---
+
+* Now, let's suppose we are looking at the prevalence of self-reported delinquency; our sample size is 52 and our population p is 0.92. How well do the 87% confidence intervals perform in this context?
+
+```R
+# simulate 100,000 datasets
+
+pop.p <- 0.92
+trials <- 52
+
+events <- vector()
+
+for(i in 1:1e5){
+  events[i] <- rbinom(n=1,size=trials,p=pop.p)
+  }
+
+events[1:12]
+events[99995:100000]
+
+# calculate normal approximation to binomial confidence intervals (93%)
+# and trap rate
+
+qnorm(p=0.065)
+z <- qnorm(p=0.935)
+z
+
+p.est <- events/trials
+hist(p.est)
+q.est <- 1-p.est
+se.p <- sqrt(p.est*q.est/trials)
+lcl.na <- p.est-z*se.p
+ucl.na <- p.est+z*se.p
+trap.na <- ifelse(lcl.na<pop.p & ucl.na>pop.p,1,0)
+table(trap.na)
+
+# calculate clopper-pearson confidence intervals
+# and trap rate
+
+lcl.cp <- qbeta(p=0.065,shape1=events,shape2=1+trials-events)
+ucl.cp <- qbeta(p=0.935,shape1=1+events,shape2=trials-events)
+trap.cp <- ifelse(lcl.cp<pop.p & ucl.cp>pop.p,1,0)
+table(trap.cp)
+
+# calculate jeffreys prior confidence intervals
+# and trap rate
+
+lcl.jp <- qbeta(p=0.065,shape1=1/2+events,shape2=1/2+trials-events)
+ucl.jp <- qbeta(p=0.935,shape1=1/2+events,shape2=1/2+trials-events)
+trap.jp <- ifelse(lcl.jp<pop.p & ucl.jp>pop.p,1,0)
+table(trap.jp)
+```
+
+* What conclusion can you draw about the reliability of the different confidence interval procedures?
+
+---
+
+* Next, we work with the dataset we studied at the end of last week's class.
 * Note that we are still reviewing confidence intervals (emphasis on chapter 20 of WB)
 
 ##### Script #1
@@ -551,3 +695,88 @@ table(trap)
 * Does this confidence interval undercover or overcover?
 
 ##### Script #5
+
+* We now consider a more complicated analysis wherein we estimate the difference between the mean age values for the two populations (1978 and 1980 releasees).
+
+```R
+age78 <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
+  rep(21,599),rep(22,580),rep(23,468),rep(24,537),rep(25,443),rep(26,432),
+  rep(27,338),rep(28,415),rep(29,292),rep(30,324),rep(31,254),rep(32,234),
+  rep(33,179),rep(34,187),rep(35,167),rep(36,177),rep(37,132),rep(38,152),
+  rep(39,117),rep(40,119),rep(41,93),rep(42,113),rep(43,102),rep(44,85),
+  rep(45,75),rep(46,90),rep(47,72),rep(48,86),rep(49,62),rep(50,78),
+  rep(51,61),rep(52,57),rep(53,50),rep(54,44),rep(55,49),rep(56,55),
+  rep(57,34),rep(58,34),rep(59,25),rep(60,21),rep(61,18),rep(62,19),
+  rep(63,11),rep(64,16),rep(65,7),rep(66,5),rep(67,13),rep(68,5),rep(69,3),
+  rep(70,1),rep(71,3),rep(72,5),rep(73,3),rep(74,4),rep(75,2),rep(77,2),rep(78,2))
+ 
+age80 <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
+  rep(21,517),rep(22,601),rep(23,516),rep(24,565),rep(25,407),rep(26,495),
+  rep(27,302),rep(28,397),rep(29,291),rep(30,298),rep(31,261),rep(32,330),
+  rep(33,224),rep(34,231),rep(35,163),rep(36,194),rep(37,157),rep(38,149),
+  rep(39,125),rep(40,129),rep(41,116),rep(42,100),rep(43,88),rep(44,105),
+  rep(45,88),rep(46,80),rep(47,72),rep(48,60),rep(49,68),rep(50,67),
+  rep(51,64),rep(52,50),rep(53,47),rep(54,51),rep(55,47),rep(56,42),
+  rep(57,28),rep(58,39),rep(59,12),rep(60,29),rep(61,12),rep(62,13),
+  rep(63,8),rep(64,19),rep(65,12),rep(66,9),rep(67,2),rep(68,5),rep(69,3),
+  rep(70,6),rep(71,1),rep(73,2),rep(74,2),rep(75,1),rep(77,1),rep(79,1))
+
+N78 <- length(age78)
+N78
+N80 <- length(age80)
+N80
+ 
+# population parameter
+ 
+pop.delta <- mean(age80)-mean(age78)
+pop.delta
+ 
+qt(p=0.1,df=300-1)
+qt(p=0.9,df=300-1)
+ 
+s78 <- sample(1:N78,size=300,replace=T)
+s80 <- sample(1:N80,size=300,replace=T)
+ 
+ys78 <- age78[s78]
+ys80 <- age80[s80]
+ 
+delta <- mean(ys80)-mean(ys78)
+delta
+ 
+std.err78 <- sd(ys78)/sqrt(300)
+std.err80 <- sd(ys80)/sqrt(300)
+ 
+se.delta <- sqrt(std.err78^2 + std.err80^2)
+se.delta
+ 
+lower.limit <- delta-1.284389*se.delta
+lower.limit
+
+upper.limit <- delta+1.284389*se.delta
+upper.limit
+```
+
+* Did we trap the true population parameter value?
+* Let's see how the *procedure* performs across repeated samples:
+
+```R
+trap <- vector()
+ 
+for(i in 1:1e5){
+  s78 <- sample(1:N78,size=300,replace=T)
+  s80 <- sample(1:N80,size=300,replace=T)
+  ys78 <- age78[s78]
+  ys80 <- age80[s80]
+  std.err78 <- sd(ys78)/sqrt(300)
+  std.err80 <- sd(ys80)/sqrt(300)
+  delta <- mean(ys80)-mean(ys78)
+  se.delta <- sqrt(std.err78^2 + std.err80^2)
+  lower.limit <- delta-1.284389*se.delta
+  upper.limit <- delta+1.284389*se.delta
+  trap[i] <- ifelse(lower.limit<pop.delta & upper.limit>pop.delta,1,0)
+  }
+
+table(trap)
+```
+
+* What conclusion do we reach about the performance of this confidence interval procedure?
