@@ -425,6 +425,20 @@ age <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
 
 #### R Code for Thursday 9/18/25
 
+##### Review Time
+
+* You are given a sample of 380 people who were all released from prison 3 years ago.
+* Each of these people has been followed up and we have determined that 237 of them "failed" or "recidivated."
+* Calculate the sample estimate of the recidivism rate.
+* Calculate a 93% confidence interval for the recidivism rate using the normal approximation to the binomial or Wald formula.
+* Calculate a 93% confidence interval for the recidivism rate using the Clopper-Pearson approach.
+* Calculate a 93% confidence interval using the Jeffreys prior approach.
+* What should we consider when making a decision about which interval to report?
+* Conduct a coverage rate analysis for each of the 3 intervals. How does this affect your decision about which interval to report?
+
+ ```R
+
+
 * We begin by working with the dataset we studied at the end of last week's class.
 * Note that we are still reviewing confidence intervals (emphasis on chapter 20 of WB)
 
