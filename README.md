@@ -493,7 +493,7 @@ for(i in 1:1e4){
   }
 
 events[1:12]
-events[99995:100000]
+events[9995:10000]
 
 # calculate normal approximation to binomial confidence intervals (93%)
 # and trap rate
@@ -545,7 +545,7 @@ for(i in 1:1e4){
   }
 
 events[1:12]
-events[99995:100000]
+events[9995:10000]
 
 # calculate normal approximation to binomial confidence intervals (87%)
 # and trap rate
