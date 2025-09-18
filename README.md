@@ -725,7 +725,7 @@ table(trap)
 
 ##### Script #5
 
-* We now consider a more complicated analysis wherein we estimate the difference between the mean age values for the two populations (1978 and 1980 releasees).
+* We now consider a more complicated analysis wherein we estimate the difference between the mean age values for the two populations (1978 and 1980 releasees). We will calculate a 80% confidence interval for the sample estimate of the difference between the 2 cohort means.
 
 ```R
 age78 <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
