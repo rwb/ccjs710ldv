@@ -453,11 +453,12 @@ se.p <- sqrt(p*q/trials)
 se.p
 
 qnorm(p=0.035)
-qnorm(p=0.965)
+z <- qnorm(p=0.965)
+z
 
-lcl <- p-1.811911*se.p
+lcl <- p-z*se.p
 lcl
-ucl <- p+1.811911*se.p
+ucl <- p+z*se.p
 ucl
 
 # Clopper-Pearson approach (discussed in the Brown paper)
@@ -502,7 +503,7 @@ z <- qnorm(p=0.965)
 z
 
 p.est <- events/trials
-hist(p.est)
+hist(p.est,main="sampling distribution of recidivism rate")
 q.est <- 1-p.est
 se.p <- sqrt(p.est*q.est/trials)
 lcl.na <- p.est-z*se.p
@@ -554,7 +555,7 @@ z <- qnorm(p=0.935)
 z
 
 p.est <- events/trials
-hist(p.est)
+hist(p.est,main="sampling distribution of delinquency rate")
 q.est <- 1-p.est
 se.p <- sqrt(p.est*q.est/trials)
 lcl.na <- p.est-z*se.p
@@ -608,21 +609,41 @@ median(age)
 N <- length(age)
 
 # we draw 3 samples of size N=300 from the population
+# and calculate mean, std error, and 95% confidence interval for each sample
+
+qt(p=0.025,df=300-1)
+t <- qt(p=0.975,df=300-1)
+t
 
 s <- sample(1:N,size=300,replace=T)
 ys <- age[s]
 mean(ys)
-sd(ys)/sqrt(300)
+stderr <- sd(ys)/sqrt(300)
+stderr
+lcl <- mean(ys)-t*stderr
+lcl
+ucl <- mean(ys)+t*stderr
+ucl
 
 s <- sample(1:N,size=300,replace=T)
 ys <- age[s]
 mean(ys)
-sd(ys)/sqrt(300)
+stderr <- sd(ys)/sqrt(300)
+stderr
+lcl <- mean(ys)-t*stderr
+lcl
+ucl <- mean(ys)+t*stderr
+ucl
 
 s <- sample(1:N,size=300,replace=T)
 ys <- age[s]
 mean(ys)
-sd(ys)/sqrt(300)
+stderr <- sd(ys)/sqrt(300)
+stderr
+lcl <- mean(ys)-t*stderr
+lcl
+ucl <- mean(ys)+t*stderr
+ucl
 ```
 
 ##### Script #2
@@ -635,11 +656,14 @@ ys <- age[s]
 mean(ys)
 std.err <- sd(ys)/sqrt(35)
 std.err
+
 qt(p=0.04,df=35-1)
-qt(p=0.96,df=35-1)
-lower.limit <- mean(ys)-1.80461*std.err
+t <- qt(p=0.96,df=35-1)
+t
+
+lower.limit <- mean(ys)-t*std.err
 lower.limit
-upper.limit <- mean(ys)+1.80461*std.err
+upper.limit <- mean(ys)+t*std.err
 upper.limit
 ```
 * Did we trap the true population parameter value?
@@ -650,7 +674,8 @@ upper.limit
 
 ```R
 qt(p=0.035,df=15-1)
-qt(p=0.965,df=15-1)
+t <- qt(p=0.965,df=15-1)
+t
 
 trap <- vector()
 
@@ -658,8 +683,8 @@ for(i in 1:1e5){
   s <- sample(1:N,size=15,replace=T)
   ys <- age[s]
   std.err <- sd(ys)/sqrt(15)
-  lower.limit <- mean(ys)-1.961656*std.err
-  upper.limit <- mean(ys)+1.961656*std.err
+  lower.limit <- mean(ys)-t*std.err
+  upper.limit <- mean(ys)+t*std.err
   trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
   }
 
@@ -675,7 +700,8 @@ table(trap)
 
 ```R
 qt(p=0.045,df=200-1)
-qt(p=0.955,df=200-1)
+t <- qt(p=0.955,df=200-1)
+t
 
 trap <- vector()
 
@@ -683,8 +709,8 @@ for(i in 1:1e5){
   s <- sample(1:N,size=200,replace=T)
   ys <- age[s]
   std.err <- sd(ys)/sqrt(200)
-  lower.limit <- mean(ys)-1.70369*std.err
-  upper.limit <- mean(ys)+1.70369*std.err
+  lower.limit <- mean(ys)-t*std.err
+  upper.limit <- mean(ys)+t*std.err
   trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
   }
 
@@ -731,9 +757,6 @@ N80
 pop.delta <- mean(age80)-mean(age78)
 pop.delta
  
-qt(p=0.1,df=300-1)
-qt(p=0.9,df=300-1)
- 
 s78 <- sample(1:N78,size=300,replace=T)
 s80 <- sample(1:N80,size=300,replace=T)
  
@@ -748,11 +771,15 @@ std.err80 <- sd(ys80)/sqrt(300)
  
 se.delta <- sqrt(std.err78^2 + std.err80^2)
 se.delta
- 
-lower.limit <- delta-1.284389*se.delta
+
+qt(p=0.1,df=300-1)
+t <- qt(p=0.9,df=300-1)
+t
+
+lower.limit <- delta-t*se.delta
 lower.limit
 
-upper.limit <- delta+1.284389*se.delta
+upper.limit <- delta+t*se.delta
 upper.limit
 ```
 
@@ -771,8 +798,8 @@ for(i in 1:1e5){
   std.err80 <- sd(ys80)/sqrt(300)
   delta <- mean(ys80)-mean(ys78)
   se.delta <- sqrt(std.err78^2 + std.err80^2)
-  lower.limit <- delta-1.284389*se.delta
-  upper.limit <- delta+1.284389*se.delta
+  lower.limit <- delta-t*se.delta
+  upper.limit <- delta+t*se.delta
   trap[i] <- ifelse(lower.limit<pop.delta & upper.limit>pop.delta,1,0)
   }
 
