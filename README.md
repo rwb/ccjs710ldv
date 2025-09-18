@@ -428,6 +428,8 @@ age <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
 * We begin by working with the dataset we studied at the end of last week's class.
 * Note that we are still reviewing confidence intervals (emphasis on chapter 20 of WB)
 
+##### Script #1
+
 ```R
 # enter the data
 
