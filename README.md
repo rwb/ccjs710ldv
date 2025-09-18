@@ -126,6 +126,8 @@ quantile(r2-r1,c(0.025,0.975))
 <img src="/gfiles/fig1.png" width="750px">
 </p>
 
+##### Script #1
+
 * Let's look at a single sample:
 
 ```R
@@ -209,6 +211,8 @@ hist(pvec)
   
 ---
 
+##### Script #2
+
 * Now, let's consider a different case.
 * Suppose there is a population of 18 year olds and that 90.3% of them would acknowledge involvement in at least one act that could be considered to be an act of "delinquency" within the past 3 years -- if they were asked about it in a survey. So, this is a population value.
 * Let's draw samples of size 80 and see whether the procedure is valid.
@@ -266,6 +270,8 @@ upper.limit
 * What do you conclude?
 
 ---
+
+##### Script #3
 
 * Now, let's consider a new example. The following dataset contains the entire population of people released from prison in NC for fiscal year 1978; for each person, the age at the time of release from prison is recorded.
 
@@ -416,3 +422,5 @@ age <- c(rep(15,1),rep(16,20),rep(17,224),rep(18,504),rep(19,472),rep(20,626),
   rep(63,8),rep(64,19),rep(65,12),rep(66,9),rep(67,2),rep(68,5),rep(69,3),
   rep(70,6),rep(71,1),rep(73,2),rep(74,2),rep(75,1),rep(77,1),rep(79,1))
 ```
+
+#### R Code for Thursday 9/18/25
