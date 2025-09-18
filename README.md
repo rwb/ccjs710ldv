@@ -481,14 +481,14 @@ ucl
 * Now, we check on the actual performance of the 3 different types of confidence intervals.
 
 ```R
-# simulate 100,000 datasets
+# simulate 10,000 datasets
 
 pop.p <- 0.65
 trials <- 380
 
 events <- vector()
 
-for(i in 1:1e5){
+for(i in 1:1e4){
   events[i] <- rbinom(n=1,size=trials,p=pop.p)
   }
 
@@ -533,14 +533,14 @@ table(trap.jp)
 * Now, let's suppose we are looking at the prevalence of self-reported delinquency; our sample size is 52 and our population p is 0.92. How well do the 87% confidence intervals perform in this context?
 
 ```R
-# simulate 100,000 datasets
+# simulate 10,000 datasets
 
 pop.p <- 0.92
 trials <- 52
 
 events <- vector()
 
-for(i in 1:1e5){
+for(i in 1:1e4){
   events[i] <- rbinom(n=1,size=trials,p=pop.p)
   }
 
@@ -679,7 +679,7 @@ t
 
 trap <- vector()
 
-for(i in 1:1e5){
+for(i in 1:1e4){
   s <- sample(1:N,size=15,replace=T)
   ys <- age[s]
   std.err <- sd(ys)/sqrt(15)
@@ -705,7 +705,7 @@ t
 
 trap <- vector()
 
-for(i in 1:1e5){
+for(i in 1:1e4){
   s <- sample(1:N,size=200,replace=T)
   ys <- age[s]
   std.err <- sd(ys)/sqrt(200)
@@ -789,7 +789,7 @@ upper.limit
 ```R
 trap <- vector()
  
-for(i in 1:1e5){
+for(i in 1:1e4){
   s78 <- sample(1:N78,size=300,replace=T)
   s80 <- sample(1:N80,size=300,replace=T)
   ys78 <- age78[s78]
@@ -807,3 +807,102 @@ table(trap)
 ```
 
 * What conclusion do we reach about the performance of this confidence interval procedure?
+---
+
+##### Script #6
+
+* We now consider the problem of estimating a confidence interval for the sample median.
+* To investigate this, we will use the 1978 NCDOC data:
+
+```R
+set.seed(381)
+ 
+age78 <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
+  rep(21,599),rep(22,580),rep(23,468),rep(24,537),rep(25,443),rep(26,432),
+  rep(27,338),rep(28,415),rep(29,292),rep(30,324),rep(31,254),rep(32,234),
+  rep(33,179),rep(34,187),rep(35,167),rep(36,177),rep(37,132),rep(38,152),
+  rep(39,117),rep(40,119),rep(41,93),rep(42,113),rep(43,102),rep(44,85),
+  rep(45,75),rep(46,90),rep(47,72),rep(48,86),rep(49,62),rep(50,78),
+  rep(51,61),rep(52,57),rep(53,50),rep(54,44),rep(55,49),rep(56,55),
+  rep(57,34),rep(58,34),rep(59,25),rep(60,21),rep(61,18),rep(62,19),
+  rep(63,11),rep(64,16),rep(65,7),rep(66,5),rep(67,13),rep(68,5),rep(69,3),
+  rep(70,1),rep(71,3),rep(72,5),rep(73,3),rep(74,4),rep(75,2),rep(77,2),rep(78,2))
+
+N <- length(age78)
+mean(age78)
+median(age78)
+
+s <- sample(1:N,size=300,replace=T)
+ys <- age78[s]
+mean(ys)
+sd(ys)/sqrt(300)
+
+# 95% confidence interval for the sample mean
+
+z <- qt(p=0.975,df=300-1)
+
+mean(ys)-z*(sd(ys)/sqrt(300))
+mean(ys)+z*(sd(ys)/sqrt(300))
+
+# calculate the sample median
+
+median(ys)
+```
+
+* Now, let's use the bootstrap to calculate the confidence interval for both the sample mean and the sample median:
+
+```R
+smn <- vector()
+smd <- vector()
+ 
+for(i in 1:3000){
+  b <- sample(1:300,size=300,replace=T)
+  yb <- ys[b]
+  smn[i] <- mean(yb)
+  smd[i] <- median(yb)
+  }
+
+# confidence interval for the mean
+
+mean(ys)-z*sd(smn)
+mean(ys)+z*sd(smn)
+
+# confidence interval for the median
+
+median(ys)-z*sd(smd)
+median(ys)+z*sd(smd)
+```
+
+* If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
+* We will simulate 1000 datasets and then draw 3000 bootstrap samples for each of the 1000 samples.
+
+```R
+trap.mean <- vector()
+trap.median <- vector()
+
+for(i in 1:1000){
+  s <- sample(1:N,size=300,replace=T)
+  yrs <- age78[s]
+
+  smn <- vector()
+  smd <- vector()
+ 
+  for(j in 1:3000){
+    b <- sample(1:300,size=300,replace=T)
+    yb <- ys[b]
+    smn[j] <- mean(yb)
+    smd[j] <- median(yb)
+    }
+
+  lcl.mean <- mean(yrs)-z*sd(smn)
+  ucl.mean <- mean(yrs)+z*sd(smn)
+
+  lcl.median <- median(yrs)-z*sd(smd)
+  ucl.median <- median(yrs)+z*sd(smd)
+
+  trap.mean[i] <- ifelse(lcl.mean<mean(age78) & ucl.mean>mean(age78),1,0)
+  trap.median[i] <- ifelse(lcl.median<median(age78) & ucl.median>median(age78),1,0)
+  }
+
+table(trap.mean)
+table(trap.median)
