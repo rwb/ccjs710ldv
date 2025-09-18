@@ -678,10 +678,12 @@ t <- qt(p=0.965,df=15-1)
 t
 
 trap <- vector()
+mys <- vector()
 
 for(i in 1:1e4){
   s <- sample(1:N,size=15,replace=T)
   ys <- age[s]
+  mys[i] <- mean(ys)
   std.err <- sd(ys)/sqrt(15)
   lower.limit <- mean(ys)-t*std.err
   upper.limit <- mean(ys)+t*std.err
@@ -689,6 +691,7 @@ for(i in 1:1e4){
   }
 
 table(trap)
+hist(mys)
 ```
 
 * What fraction of the confidence intervals contained the true population parameter?
