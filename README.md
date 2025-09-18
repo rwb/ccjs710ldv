@@ -839,10 +839,10 @@ sd(ys)/sqrt(300)
 
 # 95% confidence interval for the sample mean
 
-z <- qt(p=0.975,df=300-1)
+t <- qt(p=0.975,df=300-1)
 
-mean(ys)-z*(sd(ys)/sqrt(300))
-mean(ys)+z*(sd(ys)/sqrt(300))
+mean(ys)-t*(sd(ys)/sqrt(300))
+mean(ys)+t*(sd(ys)/sqrt(300))
 
 # calculate the sample median
 
@@ -864,13 +864,13 @@ for(i in 1:3000){
 
 # confidence interval for the mean
 
-mean(ys)-z*sd(smn)
-mean(ys)+z*sd(smn)
+mean(ys)-t*sd(smn)
+mean(ys)+t*sd(smn)
 
 # confidence interval for the median
 
-median(ys)-z*sd(smd)
-median(ys)+z*sd(smd)
+median(ys)-t*sd(smd)
+median(ys)+t*sd(smd)
 ```
 
 * If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
@@ -894,11 +894,11 @@ for(i in 1:1000){
     smd[j] <- median(yb)
     }
 
-  lcl.mean <- mean(yrs)-z*sd(smn)
-  ucl.mean <- mean(yrs)+z*sd(smn)
+  lcl.mean <- mean(yrs)-t*sd(smn)
+  ucl.mean <- mean(yrs)+t*sd(smn)
 
-  lcl.median <- median(yrs)-z*sd(smd)
-  ucl.median <- median(yrs)+z*sd(smd)
+  lcl.median <- median(yrs)-t*sd(smd)
+  ucl.median <- median(yrs)+t*sd(smd)
 
   trap.mean[i] <- ifelse(lcl.mean<mean(age78) & ucl.mean>mean(age78),1,0)
   trap.median[i] <- ifelse(lcl.median<median(age78) & ucl.median>median(age78),1,0)
@@ -906,3 +906,6 @@ for(i in 1:1000){
 
 table(trap.mean)
 table(trap.median)
+```
+
+* What trap rate do you observe for each estimator?
