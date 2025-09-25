@@ -881,7 +881,9 @@ ys <- age78[s]
 median(ys)
 ```
 
-* Now, let's use the bootstrap to calculate the 87% confidence interval for the sample median:
+* Now, let's use the bootstrap to calculate the 87% confidence interval for the sample median.
+* Note that this approach is described in Wasserman (2004:109-110).
+* This approach assumes that the *bootstrap distribution* of the sample median is "close to normal."
 
 ```R
 qt(p=0.065,df=300-1)
@@ -900,6 +902,10 @@ for(i in 1:3000){
 
 median(ys)-tc*sd(smd)
 median(ys)+tc*sd(smd)
+
+# create a histogram of the bootstrapped medians
+
+hist(smd)
 ```
 
 * If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
@@ -930,3 +936,5 @@ table(trap.median)
 ```
 
 * What is our trap (coverage) rate from this study?
+* Can we do better?
+
