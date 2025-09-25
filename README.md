@@ -1048,7 +1048,7 @@ for(i in 1:3000){
 table(trap.median)
 ```
 
-##### Script #6
+##### Script #5
 
 * Since the median is the 50% percentile of a distribution, the probability an observation drawn at random is above or below the median is 0.5.
 * Step 1: consider the number of cases in the dataset; for our example, the sample size is 300.
@@ -1086,7 +1086,167 @@ for(i in 1:3000){
 table(trap.median)
 ```
 
-##### Script #7
+##### Script #6
 
 * Let's return to the question of proportions, except now we will consider the difference between 2 proportions.
-* 
+* Suppose we have 2 prison release cohorts in different years; each cohort was followed for 5 years.
+* We want to see whether we can reject Ho that the recidivism (failure) rates are the same for the 2 cohorts.
+* The significance level we will use for our test is 0.12.
+  
+| Release Cohort    | Failures | Successes | Total |
+| -------- | -------: | ------:| ------:|
+| 1  |   6225  | 3076 | 9301 |
+| 2 |   6274 | 2950 | 9224 |
+
+
+```R
+# calculate conditional failure probability (given cohort)
+
+pfail1 <- 6225/9301
+pfail1
+pfail2 <- 6274/9224
+pfail2
+
+# different summary measures
+
+# difference
+
+pfail2-pfail1
+
+# relative risk (ratio)
+
+pfail2/pfail1
+
+# odds (ratio)
+
+(pfail2/(1-pfail2))/(pfail1/(1-pfail1))
+
+# log-odds ratio
+
+log((pfail2/(1-pfail2))/(pfail1/(1-pfail1)))
+```
+
+##### Script #7
+
+* Now, we consider the question of inference.
+  
+```
+set.seed(381)
+
+cohort <- c(rep(1,9301),rep(2,9224))
+y <- c(rep(0,3076),rep(1,6225),rep(0,2950),rep(1,6274))
+
+P <- data.frame(cohort,y)
+head(P,n=10)
+tail(P,n=10)
+
+P1 <- subset(P,cohort==1)
+P2 <- subset(P,cohort==2)
+
+S1 <- sample(1:nrow(P1),size=500,replace=T)
+S2 <- sample(1:nrow(P2),size=500,replace=T)
+
+ys1 <- P1$y[S1]
+ys2 <- P2$y[S2]
+
+table(ys1,exclude=NULL)
+table(ys2,exclude=NULL)
+
+p1 <- rbeta(n=1e5,shape1=1/2+362,shape2=1/2+138)
+quantile(p1,c(0.06,0.94))
+p2 <- rbeta(n=1e5,shape1=1/2+332,shape2=1/2+168)
+quantile(p2,c(0.06,0.94))
+boxplot(p1,p2)
+
+# difference between the 2 proportions
+
+quantile(p2-p1,c(0.06,0.94))
+
+# ratio of p2:p1
+
+quantile(p2/p1,c(0.06,0.94))
+
+# odds ratio
+
+o1 <- p1/(1-p1)
+o2 <- p2/(1-p2)
+quantile(o2/o1,c(0.06,0.94))
+
+# log(odds ratio)
+
+quantile(log(o2/o1),c(0.06,0.94))
+
+# z-test
+
+theta1 <- 362/500
+theta2 <- 332/500
+pooled.theta <- (362+332)/(500+500)
+n1 <- 500
+n2 <- 500
+
+# critical value is +/- z
+
+z <- qnorm(p=0.94)
+z
+
+# compute test statistic
+
+delta <- theta2-theta1
+delta
+se.delta <- sqrt(pooled.theta*(1-pooled.theta)*(1/n1+1/n2))
+se.delta
+delta/se.delta
+
+# normal approximation 88% confidence interval
+
+delta-z*se.delta
+delta+z*se.delta
+
+# lm procedure
+
+sc <- c(rep(1,500),rep(2,500))
+sy <- c(ys1,ys2)
+data.frame(sc,sy)
+M <- lm(sy~1+sc)
+summary(M)
+
+ey.cohort1 <- 0.78400+0.06000*1
+ey.cohort1
+ey.cohort2 <- 0.78400+0.06000*2
+ey.cohort2
+
+library(mvnfast)
+B <- coef(M)
+V <- vcov(M)
+D <- M$df.residual
+sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+sbey.cohort1 <- sb[,1]+sb[,2]*1
+sbey.cohort2 <- sb[,1]+sb[,2]*2
+boxplot(sbey.cohort1,sbey.cohort2)
+quantile(sbey.cohort1,c(0.06,0.94))
+quantile(sbey.cohort2,c(0.06,0.94))
+quantile(sbey.cohort2-sbey.cohort1,c(0.06,0.94))
+
+# glm procedure
+
+M <- glm(sy~1+sc,family="binomial")
+summary(M)
+
+logit.cohort1 <- 1.2476-0.2832*1
+logit.cohort1
+logit.cohort2 <- 1.2476-0.2832*2
+logit.cohort2
+
+library(mvnfast)
+B <- coef(M)
+V <- vcov(M)
+sb <- rmvn(n=1e5,mu=B,sigma=V)
+sbey.logit.cohort1 <- sb[,1]+sb[,2]*1
+sbey.logit.cohort2 <- sb[,1]+sb[,2]*2
+sbey.cohort1 <- exp(sbey.logit.cohort1)/(1+exp(sbey.logit.cohort1))
+sbey.cohort2 <- exp(sbey.logit.cohort2)/(1+exp(sbey.logit.cohort2))
+boxplot(sbey.cohort1,sbey.cohort2)
+quantile(sbey.cohort1,c(0.06,0.94))
+quantile(sbey.cohort2,c(0.06,0.94))
+quantile(sbey.cohort2-sbey.cohort1,c(0.06,0.94))
+```
