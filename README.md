@@ -849,7 +849,7 @@ table(trap)
 * I will leave it as an exercise for you to see what results you get if you use the pooled variance procedure.
 ---
 
-##### Script #6
+##### Script #2
 
 * We now consider the problem of estimating a confidence interval for the sample median.
 * To investigate this, we will use the 1978 NCDOC data:
@@ -869,83 +869,64 @@ age78 <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
   rep(70,1),rep(71,3),rep(72,5),rep(73,3),rep(74,4),rep(75,2),rep(77,2),rep(78,2))
 
 N <- length(age78)
-mean(age78)
+
+# calculate the population median
+
 median(age78)
+
+# draw a sample and calculate the sample median
 
 s <- sample(1:N,size=300,replace=T)
 ys <- age78[s]
-mean(ys)
-sd(ys)/sqrt(300)
-
-# 95% confidence interval for the sample mean
-
-t <- qt(p=0.975,df=300-1)
-
-mean(ys)-t*(sd(ys)/sqrt(300))
-mean(ys)+t*(sd(ys)/sqrt(300))
-
-# calculate the sample median
-
 median(ys)
 ```
 
-* Now, let's use the bootstrap to calculate the confidence interval for both the sample mean and the sample median:
+* Now, let's use the bootstrap to calculate the 87% confidence interval for the sample median:
 
 ```R
-smn <- vector()
+qt(p=0.065,df=300-1)
+tc <- qt(p=1-0.065,df=300-1)
+tc
+
 smd <- vector()
  
 for(i in 1:3000){
   b <- sample(1:300,size=300,replace=T)
   yb <- ys[b]
-  smn[i] <- mean(yb)
   smd[i] <- median(yb)
   }
 
-# confidence interval for the mean
-
-mean(ys)-t*sd(smn)
-mean(ys)+t*sd(smn)
-
 # confidence interval for the median
 
-median(ys)-t*sd(smd)
-median(ys)+t*sd(smd)
+median(ys)-tc*sd(smd)
+median(ys)+tc*sd(smd)
 ```
 
 * If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
-* We will simulate 1000 datasets and then draw 3000 bootstrap samples for each of the 1000 samples.
+* We will draw 3000 samples and then draw 3000 bootstrap samples for each of the 1000 samples.
 
 ```R
-trap.mean <- vector()
 trap.median <- vector()
 
 for(i in 1:3000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
 
-  smn <- vector()
   smd <- vector()
  
   for(j in 1:3000){
     b <- sample(1:300,size=300,replace=T)
     yb <- yrs[b]
-    smn[j] <- mean(yb)
     smd[j] <- median(yb)
     }
 
-  lcl.mean <- mean(yrs)-t*sd(smn)
-  ucl.mean <- mean(yrs)+t*sd(smn)
+  lcl.median <- median(yrs)-tc*sd(smd)
+  ucl.median <- median(yrs)+tc*sd(smd)
 
-  lcl.median <- median(yrs)-t*sd(smd)
-  ucl.median <- median(yrs)+t*sd(smd)
-
-  trap.mean[i] <- ifelse(lcl.mean<mean(age78) & ucl.mean>mean(age78),1,0)
   trap.median[i] <- ifelse(lcl.median<median(age78) & ucl.median>median(age78),1,0)
   }
 
-table(trap.mean)
 table(trap.median)
 ```
 
-* What trap rate do you observe for each estimator?
+* What is our trap (coverage) rate from this study?
