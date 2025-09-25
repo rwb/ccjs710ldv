@@ -892,7 +892,7 @@ for(i in 1:1000){
  
   for(j in 1:3000){
     b <- sample(1:300,size=300,replace=T)
-    yb <- ys[b]
+    yb <- yrs[b]
     smn[j] <- mean(yb)
     smd[j] <- median(yb)
     }
