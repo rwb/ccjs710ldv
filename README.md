@@ -883,7 +883,7 @@ median(ys)+t*sd(smd)
 trap.mean <- vector()
 trap.median <- vector()
 
-for(i in 1:1000){
+for(i in 1:3000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
 
