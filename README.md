@@ -728,6 +728,7 @@ table(trap)
 * In today's class, we consider the issue of using confidence intervals to study the uncertainty of estimating the difference between two sample means (when the populaton difference is known).
 * Next, we study confidence intervals as a measure of uncertainty for the sample median.
 * Then, we examine the issue of uncertainty in assessing differences between medians and proportions.
+* I recommend you read Weisburd and Britt, pp. 527-561 for next week.
 
 ##### Script #1
 
