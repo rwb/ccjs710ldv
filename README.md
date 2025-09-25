@@ -81,7 +81,7 @@ for(i in 1:3000){
   d <- r2-r1
   lcl.d <- quantile(d,0.025)
   ucl.d <- quantile(d,0.975)
-  trap[i] <- ifelse(lcl.d<0 & ucl.d>0,1,0)
+  trap[i] <- ifelse(lcl.d<=0 & ucl.d>=0,1,0)
   }
 
 table(trap)
@@ -199,7 +199,7 @@ for(i in 1:1e5){
   std.err <- sqrt(pvec[i]*q/N)
   lower.limit <- pvec[i]-1.811911*std.err
   upper.limit <- pvec[i]+1.811911*std.err
-  trap[i] <- ifelse(lower.limit<0.675 & upper.limit>0.675,1,0)
+  trap[i] <- ifelse(lower.limit<=0.675 & upper.limit>=0.675,1,0)
   }
 
 table(trap,exclude=NULL)
@@ -232,7 +232,7 @@ for(i in 1:1e5){
   N <- length(y)
   lower.limit <- qbeta(p=0.035,shape1=sy,shape2=1+N-sy)
   upper.limit <- qbeta(p=0.965,shape1=1+sy,shape2=N-sy)
-  trap[i] <- ifelse(lower.limit<0.675 & upper.limit>0.675,1,0)
+  trap[i] <- ifelse(lower.limit<=0.675 & upper.limit>=0.675,1,0)
   }
 
 table(trap,exclude=NULL)
@@ -379,7 +379,7 @@ for(i in 1:1e5){
   std.err <- sd(ys)/sqrt(20)
   lower.limit <- mean(ys)-1.729133*std.err
   upper.limit <- mean(ys)+1.729133*std.err
-  trap[i] <- ifelse(lower.limit<29.32787 & upper.limit>29.32787,1,0)
+  trap[i] <- ifelse(lower.limit<=29.32787 & upper.limit>=29.32787,1,0)
   }
 
 table(trap)
@@ -401,7 +401,7 @@ for(i in 1:1e5){
   std.err <- sd(ys)/sqrt(300)
   lower.limit <- mean(ys)-1.649966*std.err
   upper.limit <- mean(ys)+1.649966*std.err
-  trap[i] <- ifelse(lower.limit<29.32787 & upper.limit>29.32787,1,0)
+  trap[i] <- ifelse(lower.limit<=29.32787 & upper.limit>=29.32787,1,0)
   }
 
 table(trap)
@@ -516,7 +516,7 @@ table(trap.na)
 
 lcl.cp <- qbeta(p=0.035,shape1=events,shape2=1+trials-events)
 ucl.cp <- qbeta(p=0.965,shape1=1+events,shape2=trials-events)
-trap.cp <- ifelse(lcl.cp<pop.p & ucl.cp>pop.p,1,0)
+trap.cp <- ifelse(lcl.cp<=pop.p & ucl.cp>=pop.p,1,0)
 table(trap.cp)
 
 # calculate jeffreys prior confidence intervals
@@ -524,7 +524,7 @@ table(trap.cp)
 
 lcl.jp <- qbeta(p=0.035,shape1=1/2+events,shape2=1/2+trials-events)
 ucl.jp <- qbeta(p=0.965,shape1=1/2+events,shape2=1/2+trials-events)
-trap.jp <- ifelse(lcl.jp<pop.p & ucl.jp>pop.p,1,0)
+trap.jp <- ifelse(lcl.jp<=pop.p & ucl.jp>=pop.p,1,0)
 table(trap.jp)
 ```
 
@@ -560,7 +560,7 @@ q.est <- 1-p.est
 se.p <- sqrt(p.est*q.est/trials)
 lcl.na <- p.est-z*se.p
 ucl.na <- p.est+z*se.p
-trap.na <- ifelse(lcl.na<pop.p & ucl.na>pop.p,1,0)
+trap.na <- ifelse(lcl.na<=pop.p & ucl.na>=pop.p,1,0)
 table(trap.na)
 
 # calculate clopper-pearson confidence intervals
@@ -576,7 +576,7 @@ table(trap.cp)
 
 lcl.jp <- qbeta(p=0.065,shape1=1/2+events,shape2=1/2+trials-events)
 ucl.jp <- qbeta(p=0.935,shape1=1/2+events,shape2=1/2+trials-events)
-trap.jp <- ifelse(lcl.jp<pop.p & ucl.jp>pop.p,1,0)
+trap.jp <- ifelse(lcl.jp<=pop.p & ucl.jp>=pop.p,1,0)
 table(trap.jp)
 ```
 
@@ -687,7 +687,7 @@ for(i in 1:1e4){
   std.err <- sd(ys)/sqrt(15)
   lower.limit <- mean(ys)-t*std.err
   upper.limit <- mean(ys)+t*std.err
-  trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
+  trap[i] <- ifelse(lower.limit<=29.17824 & upper.limit>=29.17824,1,0)
   }
 
 table(trap)
@@ -714,7 +714,7 @@ for(i in 1:1e4){
   std.err <- sd(ys)/sqrt(200)
   lower.limit <- mean(ys)-t*std.err
   upper.limit <- mean(ys)+t*std.err
-  trap[i] <- ifelse(lower.limit<29.17824 & upper.limit>29.17824,1,0)
+  trap[i] <- ifelse(lower.limit<=29.17824 & upper.limit>=29.17824,1,0)
   }
 
 table(trap)
@@ -839,7 +839,7 @@ for(i in 1:1e5){
   se.delta <- sqrt(v80/(n80-1)+v78/(n78-1))
   lower.limit <- delta.hat-tc*se.delta
   upper.limit <- delta.hat+tc*se.delta
-  trap[i] <- ifelse(lower.limit<pop.delta & upper.limit>pop.delta,1,0)
+  trap[i] <- ifelse(lower.limit<=pop.delta & upper.limit>=pop.delta,1,0)
   }
 
 table(trap)
@@ -929,12 +929,164 @@ for(i in 1:3000){
   lcl.median <- median(yrs)-tc*sd(smd)
   ucl.median <- median(yrs)+tc*sd(smd)
 
-  trap.median[i] <- ifelse(lcl.median<median(age78) & ucl.median>median(age78),1,0)
+  trap.median[i] <- ifelse(lcl.median<=median(age78) & ucl.median>=median(age78),1,0)
   }
 
 table(trap.median)
 ```
 
 * What is our trap (coverage) rate from this study?
-* Can we do better?
 
+---
+
+##### Script #3
+
+* Wasserman (2004:110-112) introduces the concept of the *pivotal bootstrap* which makes weaker assumptions than the normal bootstrap above.
+* Here, the key assumption is that the bootstrapped distribution of sample medians is a good approximation to the actual sampling distribution of sample medians.
+
+```R
+smd <- vector()
+ 
+for(i in 1:10000){
+  b <- sample(1:300,size=300,replace=T)
+  yb <- ys[b]
+  smd[i] <- median(yb)
+  }
+
+# confidence interval for the median
+
+lcl <- 2*median(ys)-quantile(smd,0.935)
+lcl
+ucl <- 2*median(ys)-quantile(smd,0.065)
+ucl
+
+# create a boxplot showing the bootstrapped distribution of sample medians alongside
+# the (approximate) sampling distribution of the sample medians
+
+mdrs <- vector()
+
+for(i in 1:10000){
+  s <- sample(1:N,size=300,replace=T)
+  ys <- age78[s]
+  mdrs[i] <- median(ys)
+  }
+
+boxplot(smd,mdrs)
+```
+
+* Check on the coverage rate.
+
+```R
+trap.median <- vector()
+
+for(i in 1:3000){
+  s <- sample(1:N,size=300,replace=T)
+  yrs <- age78[s]
+
+  smd <- vector()
+ 
+  for(j in 1:3000){
+    b <- sample(1:300,size=300,replace=T)
+    yb <- yrs[b]
+    smd[j] <- median(yb)
+    }
+
+  lcl.median <- 2*median(yrs)-quantile(smd,0.935)
+  ucl.median <- 2*median(yrs)-quantile(smd,0.065)
+
+  trap.median[i] <- ifelse(lcl.median<=median(age78) & ucl.median>=median(age78),1,0)
+  }
+
+table(trap.median)
+```
+
+##### Script #4
+
+* We now consider the *percentile interval*
+* Here is the R code:
+
+```R
+smd <- vector()
+ 
+for(i in 1:3000){
+  b <- sample(1:300,size=300,replace=T)
+  yb <- ys[b]
+  smd[i] <- median(yb)
+  }
+
+# confidence interval for the median
+
+lcl <- quantile(smd,0.065)
+lcl
+ucl <- quantile(smd,0.935)
+ucl
+```
+
+* Let's check on the coverage rate:
+
+```R
+trap.median <- vector()
+
+for(i in 1:3000){
+  s <- sample(1:N,size=300,replace=T)
+  yrs <- age78[s]
+
+  smd <- vector()
+ 
+  for(j in 1:3000){
+    b <- sample(1:300,size=300,replace=T)
+    yb <- yrs[b]
+    smd[j] <- median(yb)
+    }
+
+  lcl.median <- quantile(smd,0.065)
+  ucl.median <- quantile(smd,0.935)
+
+  trap.median[i] <- ifelse(lcl.median<=median(age78) & ucl.median>=median(age78),1,0)
+  }
+
+table(trap.median)
+```
+
+##### Script #6
+
+* Since the median is the 50% percentile of a distribution, the probability an observation drawn at random is above or below the median is 0.5.
+* Step 1: consider the number of cases in the dataset; for our example, the sample size is 300.
+* Step 2: find the 6.5th and 93.5th percentiles of the binomial distribution with 300 trials and success probability 0.5 (since we are studying the median).
+* Step 3: with 300 cases and success probability 0.5, the endpoints of the confidence interval will be at positions 137 and 163.
+* Step 4: sort the dataset.
+* Step 5: find the value of the variable being studied in positions 137 and 163.
+* This is a so-called *exact* procedure.
+
+```R
+ns <- 300
+qbinom(p=0.065,size=300,prob=0.5)
+qbinom(p=0.935,size=300,prob=0.5)
+sort.ys <- sort(ys)
+lcl <- sort.ys[137]
+lcl
+ucl <- sort.ys[163]
+ucl
+```
+
+* Let's check on the coverage rate of the exact procedure:
+
+```R
+trap.median <- vector()
+
+for(i in 1:3000){
+  s <- sample(1:N,size=300,replace=T)
+  yrs <- age78[s]
+  sort.yrs <- sort(yrs)
+  lcl.median <- sort.yrs[137]
+  ucl.median <- sort.yrs[163]
+  trap.median[i] <- ifelse(lcl.median<=median(age78) & ucl.median>=median(age78),1,0)
+  }
+
+table(trap.median)
+```
+
+##### Script #7
+
+* Let's return to the question of proportions, except now we will consider the difference between 2 proportions.
+* 
