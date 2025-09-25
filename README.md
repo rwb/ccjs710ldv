@@ -1129,6 +1129,7 @@ log((pfail2/(1-pfail2))/(pfail1/(1-pfail1)))
 ##### Script #7
 
 * Now, we consider the question of inference.
+* This means we are now going to be working with a sample
   
 ```
 set.seed(381)
@@ -1151,6 +1152,33 @@ ys2 <- P2$y[S2]
 
 table(ys1,exclude=NULL)
 table(ys2,exclude=NULL)
+
+# descriptive information
+
+# calculate conditional failure probability (given cohort)
+
+pfail1 <- 362/500
+pfail1
+pfail2 <- 332/500
+pfail2
+
+# different summary measures
+
+# difference
+
+pfail2-pfail1
+
+# relative risk (ratio)
+
+pfail2/pfail1
+
+# odds (ratio)
+
+(pfail2/(1-pfail2))/(pfail1/(1-pfail1))
+
+# log-odds ratio
+
+log((pfail2/(1-pfail2))/(pfail1/(1-pfail1)))
 
 p1 <- rbeta(n=1e5,shape1=1/2+362,shape2=1/2+138)
 quantile(p1,c(0.06,0.94))
