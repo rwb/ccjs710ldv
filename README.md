@@ -911,12 +911,12 @@ table(smd)
 ```
 
 * If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
-* We will draw 3000 samples and then draw 3000 bootstrap samples for each of the 1000 samples.
+* We will draw 1000 samples and then draw 3000 bootstrap samples for each of the 1000 samples.
 
 ```R
 trap.median <- vector()
 
-for(i in 1:3000){
+for(i in 1:1000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
 
@@ -981,7 +981,7 @@ boxplot(smd,mdrs)
 ```R
 trap.median <- vector()
 
-for(i in 1:3000){
+for(i in 1:1000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
 
@@ -1029,7 +1029,7 @@ ucl
 ```R
 trap.median <- vector()
 
-for(i in 1:3000){
+for(i in 1:1000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
 
@@ -1076,7 +1076,7 @@ ucl
 ```R
 trap.median <- vector()
 
-for(i in 1:3000){
+for(i in 1:1000){
   s <- sample(1:N,size=300,replace=T)
   yrs <- age78[s]
   sort.yrs <- sort(yrs)
