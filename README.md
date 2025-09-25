@@ -907,6 +907,7 @@ median(ys)+tc*sd(smd)
 # create a histogram of the bootstrapped medians
 
 hist(smd)
+table(smd)
 ```
 
 * If we want to check on the actual coverage performance of this confidence interval procedure, then we use the following approach.
