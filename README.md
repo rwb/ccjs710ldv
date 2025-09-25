@@ -723,9 +723,15 @@ table(trap)
 * What fraction of the confidence intervals contained the true population parameter?
 * Does this confidence interval undercover or overcover?
 
-##### Script #5
+#### R Code for Thursday 9/25/25
 
-* We now consider a more complicated analysis wherein we estimate the difference between the mean age values for the two populations (1978 and 1980 releasees). We will calculate a 80% confidence interval for the sample estimate of the difference between the 2 cohort means.
+* In today's class, we consider the issue of using confidence intervals to study the uncertainty of estimating the difference between two sample means (when the populaton difference is known).
+* Next, we study confidence intervals as a measure of uncertainty for the sample median.
+* Then, we examine the issue of uncertainty in assessing differences between medians and proportions.
+
+##### Script #1
+
+* We now consider a more complicated analysis wherein we estimate the *difference* between the mean age values for the two populations (1978 and 1980 releasees). We will calculate a 80% confidence interval for the sample estimate of the difference between the 2 cohort means.
 
 ```R
 age78 <- c(rep(16,19),rep(17,161),rep(18,492),rep(19,480),rep(20,624),
@@ -759,50 +765,80 @@ N80
  
 pop.delta <- mean(age80)-mean(age78)
 pop.delta
- 
+
+# draw a simple random sample of 300 cases
+# from each year's population
+
 s78 <- sample(1:N78,size=300,replace=T)
 s80 <- sample(1:N80,size=300,replace=T)
  
 ys78 <- age78[s78]
 ys80 <- age80[s80]
- 
-delta <- mean(ys80)-mean(ys78)
-delta
- 
-std.err78 <- sd(ys78)/sqrt(300)
-std.err80 <- sd(ys80)/sqrt(300)
- 
-se.delta <- sqrt(std.err78^2 + std.err80^2)
-se.delta
 
-qt(p=0.1,df=300-1)
-t <- qt(p=0.9,df=300-1)
-t
+# calculate the difference between the 2 sample means:
+ 
+delta.hat <- mean(ys80)-mean(ys78)
+delta.hat
 
-lower.limit <- delta-t*se.delta
+# calculate the 80% confidence interval for the difference between the 2 sample means (WB, page 617)
+
+# calculate the critical value of t
+
+qt(p=0.1,df=600-2)
+tc <- qt(p=0.9,df=600-2)
+tc
+
+# method 1: separate variance method
+
+v80 <- var(ys80)
+v78 <- var(ys78)
+n80 <- 300
+n78 <- 300
+se.delta <- sqrt(v80/(n80-1)+v78/(n78-1))
+
+lower.limit <- delta.hat-tc*se.delta
 lower.limit
 
-upper.limit <- delta+t*se.delta
+upper.limit <- delta.hat+tc*se.delta
+upper.limit
+
+# method 2: pooled variance method
+
+p1 <- n80*v80+n78*v78
+p2 <- n80+n78-2
+p3 <- (n80+n78)/(n80*n78)
+se.delta <- sqrt(p1/p2)*sqrt(p3)
+
+lower.limit <- delta.hat-tc*se.delta
+lower.limit
+
+upper.limit <- delta.hat+tc*se.delta
 upper.limit
 ```
 
 * Did we trap the true population parameter value?
-* Let's see how the *procedure* performs across repeated samples:
+* Let's see how the separate variance *procedure* performs across repeated samples:
 
 ```R
+qt(p=0.1,df=600-2)
+tc <- qt(p=0.9,df=600-2)
+tc
+
 trap <- vector()
  
-for(i in 1:1e4){
+for(i in 1:1e5){
   s78 <- sample(1:N78,size=300,replace=T)
   s80 <- sample(1:N80,size=300,replace=T)
   ys78 <- age78[s78]
   ys80 <- age80[s80]
-  std.err78 <- sd(ys78)/sqrt(300)
-  std.err80 <- sd(ys80)/sqrt(300)
-  delta <- mean(ys80)-mean(ys78)
-  se.delta <- sqrt(std.err78^2 + std.err80^2)
-  lower.limit <- delta-t*se.delta
-  upper.limit <- delta+t*se.delta
+  delta.hat <- mean(ys80)-mean(ys78)
+  v80 <- var(ys80)
+  v78 <- var(ys78)
+  n80 <- 300
+  n78 <- 300
+  se.delta <- sqrt(v80/(n80-1)+v78/(n78-1))
+  lower.limit <- delta.hat-tc*se.delta
+  upper.limit <- delta.hat+tc*se.delta
   trap[i] <- ifelse(lower.limit<pop.delta & upper.limit>pop.delta,1,0)
   }
 
@@ -810,6 +846,7 @@ table(trap)
 ```
 
 * What conclusion do we reach about the performance of this confidence interval procedure?
+* I will leave it as an exercise for you to see what results you get if you use the pooled variance procedure.
 ---
 
 ##### Script #6
