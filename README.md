@@ -1329,15 +1329,15 @@ ts <- c(rep(0,110),rep(1,297),rep(2,651),rep(3,562),rep(4,547),
   273,274,277,300,305,313,344)
 ```
 
-a. check to make sure you have 9,327 observations and that the mean is 19.75458 and the median is 10; this will ensure you have read the data set correctly; set a random number seed equal to your UID number (0pts).
-b. Draw a simple random sample of 100 observations from this population; calculate the mean of your sample (2pts).
-c. Calculate a 82% confidence interval for your sample mean (3pts); report on whether your single confidence interval traps the true population parameter value.
-d. Conduct a simulation study with 10,000 datasets and random samples of size N = 100 to document the coverage rate for your confidence interval procedure (9pts).
+* a. check to make sure you have 9,327 observations and that the mean is 19.75458 and the median is 10; this will ensure you have read the data set correctly; set a random number seed equal to your UID number (0pts).
+* b. Draw a simple random sample of 100 observations from this population; calculate the mean of your sample (2pts).
+* c. Calculate a 82% confidence interval for your sample mean (3pts); report on whether your single confidence interval traps the true population parameter value.
+* d. Conduct a simulation study with 10,000 datasets and random samples of size N = 100 to document the coverage rate for your confidence interval procedure (9pts).
 
 5. Read in the dataset from problem 4 again and set your random number seed to your UID number.
 
-a. draw a simple random sample of 300 observations from the population; calculate the median of your sample (3pts).
-b. calculate a 92% confidence interval for your sample median using the normal approximation bootstrap (3pts); the pivotal bootstrap (3pts); the percentile bootstrap (3pts); and the exact procedure (3pts).
+* a. draw a simple random sample of 300 observations from the population; calculate the median of your sample (3pts).
+* b. calculate a 92% confidence interval for your sample median using the normal approximation bootstrap (3pts); the pivotal bootstrap (3pts); the percentile bootstrap (3pts); and the exact procedure (3pts).
 
 6. Set your random number seed to your UID number. Then, conduct a simulation study based on N = 10,000 samples of the North Carolina data (sample size of 300 cases for each sample) where you check on the coverage rate of the 92% exact confidence interval for the sample median. What conclusion do you draw about the coverage rate for this confidence interval procedure? (10pts).
 
@@ -1352,7 +1352,7 @@ p23 <- 6180253
 
 The question is whether there has been a significant change in the homicide rate per 100K population in Maryland between 2022 and 2023. Setting a seed equal to your UID number and using 100,000 simulations, address this question and draw a conclusion using each of the following approaches:
 
-a. calculate a difference statistic + 98% confidence interval (6pts)
-b. calculate a relative risk ratio + 98% confidence interval (6pts)
-c. calculate an odds ratio + 98% confidence interval (6pts)
-d. calculate a log(odds ratio) + 98% confidence interval (6pts)
+* a. calculate a difference statistic + 98% confidence interval (6pts)
+* b. calculate a relative risk ratio + 98% confidence interval (6pts)
+* c. calculate an odds ratio + 98% confidence interval (6pts)
+* d. calculate a log(odds ratio) + 98% confidence interval (6pts)
