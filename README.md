@@ -1280,3 +1280,79 @@ quantile(sbey.cohort1,c(0.06,0.94))
 quantile(sbey.cohort2,c(0.06,0.94))
 quantile(sbey.cohort2-sbey.cohort1,c(0.06,0.94))
 ```
+
+##### Practice Exam Questions 
+
+Instructions: please work through each of the following problems and present your results showing your computer code and/or calculations for each problem. Point values are shown next to each task you are asked to perform. You should start a new R session for each numbered problem. Please save all of your results in a text file and email them to me at the end of the class session. Good luck!
+
+1. Set a random number seed equal to your UID number. Generate a population of 100,000 inmates leaving prison. Assume that the 3-year population recidivism rate is equal to 65%. Draw a simple random sample of 350 inmates from this population. Based on the information in your sample, calculate a point estimate of the proportion who recidivated (1pt) and a 87% confidence interval around that proportion using: (1) the Wald or normal approximation to the binomial procedure (3pts); (2) the Clopper-Pearson exact procedure (3pts); and (3) the Jeffreys prior (3pts). Which of these confidence intervals would you use for this problem? Explain your reasoning (5pts).
+
+2. Set a random number seed equal to your UID number. Suppose there is a large graduating class of 1000 students at the local high school; within this population, 920 students had no young adult felony arrests and 80 had at least one. Draw a random sample of 50 people from this class and calculate a point estimate of the young adult felony arrest rate (1pt) and use the same 3 methods as in problem 1 to calculate 98% confidence intervals around this estimate (3pts for each method). Which of these confidence intervals would you report in a study and why? (5pts).
+
+3. Using your UID number as a seed, conduct a simulation study (N = 10,000 datasets) where you assess the repeated sample performance (i.e., coverage or trap rate) of the 3 confidence interval procedures you calculated in problem 2. Which of the 3 procedures has the highest and lowest coverage rates? (10pts)
+
+4. Read in the following dataset including a measure of time served in months for the 1978 North Carolina prisoner releasee cohort (N = 9,327):
+
+```R
+ts <- c(rep(0,110),rep(1,297),rep(2,651),rep(3,562),rep(4,547),
+  rep(5,550),rep(6,625),rep(7,460),rep(8,332),rep(9,324),
+  rep(10,250),rep(11,258),rep(12,303),rep(13,236),rep(14,206),
+  rep(15,192),rep(16,169),rep(17,126),rep(18,131),rep(19,132),
+  rep(20,134),rep(21,113),rep(22,108),rep(23,98),rep(24,107),
+  rep(25,97),rep(26,95),rep(27,84),rep(28,82),rep(29,88),
+  rep(30,83),rep(31,68),rep(32,61),rep(33,70),rep(34,70),
+  rep(35,60),rep(36,79),rep(37,45),rep(38,50),rep(39,35),
+  rep(40,40),rep(41,47),rep(42,43),rep(43,33),rep(44,48),
+  rep(45,43),rep(46,28),rep(47,25),rep(48,37),rep(49,20),
+  rep(50,26),rep(51,24),rep(52,25),rep(53,20),rep(54,33),
+  rep(55,27),rep(56,19),rep(57,20),rep(58,20),rep(59,14),
+  rep(60,29),rep(61,29),rep(62,19),rep(63,17),rep(64,19),
+  rep(65,21),rep(66,15),rep(67,21),rep(68,14),rep(69,8),
+  rep(70,10),rep(71,11),rep(72,17),rep(73,11),rep(74,11),
+  rep(75,12),rep(76,12),rep(77,7),rep(78,12),rep(79,8),
+  rep(80,9),rep(81,15),rep(82,8),rep(83,12),rep(84,12),
+  rep(85,7),rep(86,7),rep(87,11),rep(88,9),rep(89,5),
+  rep(90,4),rep(91,5),rep(92,5),rep(93,4),rep(94,7),
+  rep(95,3),rep(96,14),rep(97,5),rep(98,3),rep(100,3),
+  rep(101,4),rep(102,3),rep(103,3),rep(104,5),rep(105,2),
+  rep(106,8),rep(107,6),rep(108,4),rep(109,5),rep(110,3),
+  rep(111,3),rep(112,5),rep(113,2),rep(114,4),rep(115,2),
+  rep(116,2),rep(117,6),rep(118,5),119,rep(120,3),rep(121,4),
+  rep(123,2),rep(124,2),rep(125,2),127,rep(128,2),rep(129,4),
+  130,131,rep(132,4),rep(133,3),rep(134,2),rep(135,2),
+  rep(136,4),137,rep(138,2),139,140,rep(142,2),143,rep(144,2),
+  rep(146,2),rep(148,4),149,151,rep(152,2),153,rep(154,2),155,
+  rep(156,2),rep(158,3),rep(160,2),rep(161,3),rep(162,2),163,
+  164,165,166,167,rep(168,3),rep(170,2),171,172,173,174,177,
+  178,rep(179,2),182,183,184,187,190,195,200,202,205,209,213,
+  rep(218,2),219,221,225,228,231,233,236,241,243,248,254,255,
+  273,274,277,300,305,313,344)
+```
+
+a. check to make sure you have 9,327 observations and that the mean is 19.75458 and the median is 10; this will ensure you have read the data set correctly; set a random number seed equal to your UID number (0pts).
+b. Draw a simple random sample of 100 observations from this population; calculate the mean of your sample (2pts).
+c. Calculate a 82% confidence interval for your sample mean (3pts); report on whether your single confidence interval traps the true population parameter value.
+d. Conduct a simulation study with 10,000 datasets and random samples of size N = 100 to document the coverage rate for your confidence interval procedure (9pts).
+
+5. Read in the dataset from problem 4 again and set your random number seed to your UID number.
+
+a. draw a simple random sample of 300 observations from the population; calculate the median of your sample (3pts).
+b. calculate a 92% confidence interval for your sample median using the normal approximation bootstrap (3pts); the pivotal bootstrap (3pts); the percentile bootstrap (3pts); and the exact procedure (3pts).
+
+6. Set your random number seed to your UID number. Then, conduct a simulation study based on N = 10,000 samples of the North Carolina data (sample size of 300 cases for each sample) where you check on the coverage rate of the 92% exact confidence interval for the sample median. What conclusion do you draw about the coverage rate for this confidence interval procedure? (10pts).
+
+7. Suppose we have homicide and population numbers measured for Maryland in the years 2022 and 2023 (the two most recent years available from the Centers for Disease Control, National Center for Health Statistics).
+
+```R
+h22 <- 608
+h23 <- 548
+p22 <- 6164660
+p23 <- 6180253
+```
+
+The question is whether there has been a significant change in the homicide rate per 100K population in Maryland between 2022 and 2023. Setting a seed equal to your UID number and using 100,000 simulations, address this question and draw a conclusion using each of the following approaches:
+
+a. calculate a difference statistic + 98% confidence interval (6pts)
+b. calculate a relative risk ratio + 98% confidence interval (6pts)
+c. calculate an odds ratio + 98% confidence interval (6pts)
+d. calculate a log(odds ratio) + 98% confidence interval (6pts)
