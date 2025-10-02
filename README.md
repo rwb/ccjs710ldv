@@ -1240,9 +1240,9 @@ data.frame(sc,sy)
 M <- lm(sy~1+sc)
 summary(M)
 
-ey.cohort1 <- 0.78400+0.06000*1
+ey.cohort1 <- 0.78400-0.06000*1
 ey.cohort1
-ey.cohort2 <- 0.78400+0.06000*2
+ey.cohort2 <- 0.78400-0.06000*2
 ey.cohort2
 
 library(mvnfast)
