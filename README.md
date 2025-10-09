@@ -1564,7 +1564,7 @@ for(i in 1:1e4){
 
 mean(trap)
 
-# problem 5
+# problem 5 - setup
 
 set.seed(301)
 
