@@ -1356,3 +1356,404 @@ The question is whether there has been a significant change in the homicide rate
 * b. calculate a relative risk ratio + 98% confidence interval (6pts)
 * c. calculate an odds ratio + 98% confidence interval (6pts)
 * d. calculate a log(odds ratio) + 98% confidence interval (6pts)
+
+Solution code for practice exam problems:
+
+```R
+# problem 1
+
+set.seed(301)
+rp <- c(rep(0,35000),rep(1,65000))
+s <- sample(1:100000,size=350,replace=T)
+rs <- rp[s]
+
+# point estimate
+
+pr <- mean(rs)
+pr
+
+# wald/normal interval
+
+se.r <- sqrt(pr*(1-pr)/350)
+se.r
+zscore <- qnorm(p=1-0.065)
+zscore
+lcl <- pr-zscore*se.r
+lcl
+ucl <- pr+zscore*se.r
+ucl
+
+# clopper-pearson interval
+
+lcl <- qbeta(p=0.065,shape1=sum(rs),shape2=1+350-sum(rs))
+lcl
+ucl <- qbeta(p=0.935,shape1=1+sum(rs),shape2=350-sum(rs))
+ucl
+
+# jeffreys prior
+
+lcl <- qbeta(p=0.065,shape1=1/2+sum(rs),shape2=1/2+350-sum(rs))
+lcl
+ucl <- qbeta(p=0.935,shape1=1/2+sum(rs),shape2=1/2+350-sum(rs))
+ucl
+
+# problem 2
+
+set.seed(301)
+ap <- c(rep(0,920),rep(1,80))
+s <- sample(1:1000,size=50,replace=T)
+as <- ap[s]
+
+# point estimate
+
+pa <- mean(as)
+pa
+
+# wald/normal interval
+
+se.a <- sqrt(pa*(1-pa)/50)
+se.a
+zscore <- qnorm(p=0.99)
+zscore
+lcl <- pa-zscore*se.a
+lcl
+ucl <- pa+zscore*se.a
+ucl
+
+# clopper-pearson interval
+
+lcl <- qbeta(p=0.01,shape1=sum(as),shape2=1+50-sum(as))
+lcl
+ucl <- qbeta(p=0.99,shape1=1+sum(as),shape2=50-sum(as))
+ucl
+
+# jeffreys prior
+
+lcl <- qbeta(p=0.01,shape1=1/2+sum(as),shape2=1/2+50-sum(as))
+lcl
+ucl <- qbeta(p=0.99,shape1=1/2+sum(as),shape2=1/2+50-sum(as))
+ucl
+
+# problem 3
+
+set.seed(301)
+ap <- c(rep(0,920),rep(1,80))
+
+# population parameter value
+
+pop.meanap <- mean(ap)
+pop.meanap
+
+# trap rate for Wald interval
+
+trap <- vector()
+
+for(i in 1:1e4){
+  s <- sample(1:1000,size=50,replace=T)
+  aps <- ap[s]
+  phat <- mean(aps)
+  qhat <- 1-phat
+  se.phat <- sqrt(phat*qhat/50)
+  z.mult <- qnorm(p=0.99)
+  lcl <- phat-z.mult*se.phat
+  ucl <- phat+z.mult*se.phat
+  trap[i] <- ifelse(lcl<=pop.meanap & ucl>=pop.meanap,1,0)
+  }
+
+mean(trap)
+
+# trap rate for Clopper-Pearson interval
+
+trap <- vector()
+
+for(i in 1:1e4){
+  s <- sample(1:1000,size=50,replace=T)
+  aps <- ap[s]
+  lcl <- qbeta(p=0.01,shape1=sum(aps),shape2=1+50-sum(aps))
+  ucl <- qbeta(p=0.99,shape1=1+sum(aps),shape2=50-sum(aps)) 
+  trap[i] <- ifelse(lcl<=pop.meanap & ucl>=pop.meanap,1,0)
+  }
+
+mean(trap)
+
+# trap rate for interval based on Jeffreys prior
+
+trap <- vector()
+
+for(i in 1:1e4){
+  s <- sample(1:1000,size=50,replace=T)
+  aps <- ap[s]
+  lcl <- qbeta(p=0.01,shape1=1/2+sum(aps),shape2=1/2+50-sum(aps))
+  ucl <- qbeta(p=0.99,shape1=1/2+sum(aps),shape2=1/2+50-sum(aps)) 
+  trap[i] <- ifelse(lcl<=pop.meanap & ucl>=pop.meanap,1,0)
+  }
+
+mean(trap)
+
+# problem 4
+
+set.seed(301)
+
+ts <- c(rep(0,110),rep(1,297),rep(2,651),rep(3,562),rep(4,547),
+  rep(5,550),rep(6,625),rep(7,460),rep(8,332),rep(9,324),
+  rep(10,250),rep(11,258),rep(12,303),rep(13,236),rep(14,206),
+  rep(15,192),rep(16,169),rep(17,126),rep(18,131),rep(19,132),
+  rep(20,134),rep(21,113),rep(22,108),rep(23,98),rep(24,107),
+  rep(25,97),rep(26,95),rep(27,84),rep(28,82),rep(29,88),
+  rep(30,83),rep(31,68),rep(32,61),rep(33,70),rep(34,70),
+  rep(35,60),rep(36,79),rep(37,45),rep(38,50),rep(39,35),
+  rep(40,40),rep(41,47),rep(42,43),rep(43,33),rep(44,48),
+  rep(45,43),rep(46,28),rep(47,25),rep(48,37),rep(49,20),
+  rep(50,26),rep(51,24),rep(52,25),rep(53,20),rep(54,33),
+  rep(55,27),rep(56,19),rep(57,20),rep(58,20),rep(59,14),
+  rep(60,29),rep(61,29),rep(62,19),rep(63,17),rep(64,19),
+  rep(65,21),rep(66,15),rep(67,21),rep(68,14),rep(69,8),
+  rep(70,10),rep(71,11),rep(72,17),rep(73,11),rep(74,11),
+  rep(75,12),rep(76,12),rep(77,7),rep(78,12),rep(79,8),
+  rep(80,9),rep(81,15),rep(82,8),rep(83,12),rep(84,12),
+  rep(85,7),rep(86,7),rep(87,11),rep(88,9),rep(89,5),
+  rep(90,4),rep(91,5),rep(92,5),rep(93,4),rep(94,7),
+  rep(95,3),rep(96,14),rep(97,5),rep(98,3),rep(100,3),
+  rep(101,4),rep(102,3),rep(103,3),rep(104,5),rep(105,2),
+  rep(106,8),rep(107,6),rep(108,4),rep(109,5),rep(110,3),
+  rep(111,3),rep(112,5),rep(113,2),rep(114,4),rep(115,2),
+  rep(116,2),rep(117,6),rep(118,5),119,rep(120,3),rep(121,4),
+  rep(123,2),rep(124,2),rep(125,2),127,rep(128,2),rep(129,4),
+  130,131,rep(132,4),rep(133,3),rep(134,2),rep(135,2),
+  rep(136,4),137,rep(138,2),139,140,rep(142,2),143,rep(144,2),
+  rep(146,2),rep(148,4),149,151,rep(152,2),153,rep(154,2),155,
+  rep(156,2),rep(158,3),rep(160,2),rep(161,3),rep(162,2),163,
+  164,165,166,167,rep(168,3),rep(170,2),171,172,173,174,177,
+  178,rep(179,2),182,183,184,187,190,195,200,202,205,209,213,
+  rep(218,2),219,221,225,228,231,233,236,241,243,248,254,255,
+  273,274,277,300,305,313,344)
+
+# problem 4a
+
+length(ts)
+mean(ts)
+median(ts)
+
+# problem 4b
+
+s <- sample(1:length(ts),size=100,replace=T)
+tss <- ts[s]
+mean(tss)
+
+# problem 4c
+
+se.mean <- sd(tss)/sqrt(100)
+t.mult <- qt(p=0.91,df=100-1)
+t.mult
+mean(tss)-t.mult*se.mean
+mean(tss)+t.mult*se.mean
+# answer: yes the true population parameter value is in the interval
+
+# problem 4d
+
+trap <- vector()
+
+for(i in 1:1e4){
+  s <- sample(1:9327,size=100,replace=T)
+  tss <- ts[s]
+  se.mean <- sd(tss)/sqrt(100)
+  lcl <- mean(tss)-t.mult*se.mean
+  ucl <- mean(tss)+t.mult*se.mean 
+  trap[i] <- ifelse(lcl<=mean(ts) & ucl>=mean(ts),1,0)
+  }
+
+mean(trap)
+
+# problem 5
+
+set.seed(301)
+
+ts <- c(rep(0,110),rep(1,297),rep(2,651),rep(3,562),rep(4,547),
+  rep(5,550),rep(6,625),rep(7,460),rep(8,332),rep(9,324),
+  rep(10,250),rep(11,258),rep(12,303),rep(13,236),rep(14,206),
+  rep(15,192),rep(16,169),rep(17,126),rep(18,131),rep(19,132),
+  rep(20,134),rep(21,113),rep(22,108),rep(23,98),rep(24,107),
+  rep(25,97),rep(26,95),rep(27,84),rep(28,82),rep(29,88),
+  rep(30,83),rep(31,68),rep(32,61),rep(33,70),rep(34,70),
+  rep(35,60),rep(36,79),rep(37,45),rep(38,50),rep(39,35),
+  rep(40,40),rep(41,47),rep(42,43),rep(43,33),rep(44,48),
+  rep(45,43),rep(46,28),rep(47,25),rep(48,37),rep(49,20),
+  rep(50,26),rep(51,24),rep(52,25),rep(53,20),rep(54,33),
+  rep(55,27),rep(56,19),rep(57,20),rep(58,20),rep(59,14),
+  rep(60,29),rep(61,29),rep(62,19),rep(63,17),rep(64,19),
+  rep(65,21),rep(66,15),rep(67,21),rep(68,14),rep(69,8),
+  rep(70,10),rep(71,11),rep(72,17),rep(73,11),rep(74,11),
+  rep(75,12),rep(76,12),rep(77,7),rep(78,12),rep(79,8),
+  rep(80,9),rep(81,15),rep(82,8),rep(83,12),rep(84,12),
+  rep(85,7),rep(86,7),rep(87,11),rep(88,9),rep(89,5),
+  rep(90,4),rep(91,5),rep(92,5),rep(93,4),rep(94,7),
+  rep(95,3),rep(96,14),rep(97,5),rep(98,3),rep(100,3),
+  rep(101,4),rep(102,3),rep(103,3),rep(104,5),rep(105,2),
+  rep(106,8),rep(107,6),rep(108,4),rep(109,5),rep(110,3),
+  rep(111,3),rep(112,5),rep(113,2),rep(114,4),rep(115,2),
+  rep(116,2),rep(117,6),rep(118,5),119,rep(120,3),rep(121,4),
+  rep(123,2),rep(124,2),rep(125,2),127,rep(128,2),rep(129,4),
+  130,131,rep(132,4),rep(133,3),rep(134,2),rep(135,2),
+  rep(136,4),137,rep(138,2),139,140,rep(142,2),143,rep(144,2),
+  rep(146,2),rep(148,4),149,151,rep(152,2),153,rep(154,2),155,
+  rep(156,2),rep(158,3),rep(160,2),rep(161,3),rep(162,2),163,
+  164,165,166,167,rep(168,3),rep(170,2),171,172,173,174,177,
+  178,rep(179,2),182,183,184,187,190,195,200,202,205,209,213,
+  rep(218,2),219,221,225,228,231,233,236,241,243,248,254,255,
+  273,274,277,300,305,313,344)
+
+# problem 5a
+
+s <- sample(1:length(ts),size=300,replace=T)
+tss <- ts[s]
+median(tss)
+
+# problem 5b - normal approximation bootstrap
+
+estvec <- vector()
+
+for(i in 1:3000){
+  b <- sample(1:300,size=300,replace=T)
+  tssb <- tss[b]
+  estvec[i] <- median(tssb)
+  }
+
+t.mult <- qt(p=0.96,df=300-1)
+lcl <- median(tss)-t.mult*sd(estvec)
+ucl <- median(tss)+t.mult*sd(estvec)  
+lcl
+ucl
+
+# problem 5b - pivotal bootstrap
+
+estvec <- vector()
+
+for(i in 1:3000){
+  b <- sample(1:300,size=300,replace=T)
+  tssb <- tss[b]
+  estvec[i] <- median(tssb)
+  }
+
+lcl <- 2*median(tss)-quantile(estvec,0.96)
+ucl <- 2*median(tss)-quantile(estvec,0.04)
+lcl
+ucl
+
+# problem 5b - percentile bootstrap
+
+estvec <- vector()
+
+for(i in 1:3000){
+  b <- sample(1:300,size=300,replace=T)
+  tssb <- tss[b]
+  estvec[i] <- median(tssb)
+  }
+
+lcl <- quantile(estvec,0.04)
+ucl <- quantile(estvec,0.96)
+lcl
+ucl
+
+# problem 5b - exact procedure
+
+ns <- 300
+qbinom(p=0.04,size=300,prob=0.5)
+qbinom(p=0.96,size=300,prob=0.5)
+sort.vals <- sort(tss)
+lcl <- sort.vals[135]
+ucl <- sort.vals[165]
+lcl
+ucl
+
+# problem 6
+
+set.seed(301)
+
+ts <- c(rep(0,110),rep(1,297),rep(2,651),rep(3,562),rep(4,547),
+  rep(5,550),rep(6,625),rep(7,460),rep(8,332),rep(9,324),
+  rep(10,250),rep(11,258),rep(12,303),rep(13,236),rep(14,206),
+  rep(15,192),rep(16,169),rep(17,126),rep(18,131),rep(19,132),
+  rep(20,134),rep(21,113),rep(22,108),rep(23,98),rep(24,107),
+  rep(25,97),rep(26,95),rep(27,84),rep(28,82),rep(29,88),
+  rep(30,83),rep(31,68),rep(32,61),rep(33,70),rep(34,70),
+  rep(35,60),rep(36,79),rep(37,45),rep(38,50),rep(39,35),
+  rep(40,40),rep(41,47),rep(42,43),rep(43,33),rep(44,48),
+  rep(45,43),rep(46,28),rep(47,25),rep(48,37),rep(49,20),
+  rep(50,26),rep(51,24),rep(52,25),rep(53,20),rep(54,33),
+  rep(55,27),rep(56,19),rep(57,20),rep(58,20),rep(59,14),
+  rep(60,29),rep(61,29),rep(62,19),rep(63,17),rep(64,19),
+  rep(65,21),rep(66,15),rep(67,21),rep(68,14),rep(69,8),
+  rep(70,10),rep(71,11),rep(72,17),rep(73,11),rep(74,11),
+  rep(75,12),rep(76,12),rep(77,7),rep(78,12),rep(79,8),
+  rep(80,9),rep(81,15),rep(82,8),rep(83,12),rep(84,12),
+  rep(85,7),rep(86,7),rep(87,11),rep(88,9),rep(89,5),
+  rep(90,4),rep(91,5),rep(92,5),rep(93,4),rep(94,7),
+  rep(95,3),rep(96,14),rep(97,5),rep(98,3),rep(100,3),
+  rep(101,4),rep(102,3),rep(103,3),rep(104,5),rep(105,2),
+  rep(106,8),rep(107,6),rep(108,4),rep(109,5),rep(110,3),
+  rep(111,3),rep(112,5),rep(113,2),rep(114,4),rep(115,2),
+  rep(116,2),rep(117,6),rep(118,5),119,rep(120,3),rep(121,4),
+  rep(123,2),rep(124,2),rep(125,2),127,rep(128,2),rep(129,4),
+  130,131,rep(132,4),rep(133,3),rep(134,2),rep(135,2),
+  rep(136,4),137,rep(138,2),139,140,rep(142,2),143,rep(144,2),
+  rep(146,2),rep(148,4),149,151,rep(152,2),153,rep(154,2),155,
+  rep(156,2),rep(158,3),rep(160,2),rep(161,3),rep(162,2),163,
+  164,165,166,167,rep(168,3),rep(170,2),171,172,173,174,177,
+  178,rep(179,2),182,183,184,187,190,195,200,202,205,209,213,
+  rep(218,2),219,221,225,228,231,233,236,241,243,248,254,255,
+  273,274,277,300,305,313,344)
+
+trap.median <- vector()
+
+for(i in 1:10000){
+  s <- sample(1:9327,size=300,replace=T)
+  tss <- ts[s]
+  sort.vals <- sort(tss)
+  lcl.median <- sort.vals[135]
+  ucl.median <- sort.vals[165]
+  trap.median[i] <- ifelse(lcl.median<=median(ts) & ucl.median>=median(ts),1,0)
+  }
+
+mean(trap.median)
+
+# problem 7
+
+set.seed(301)
+
+h22 <- 608
+h23 <- 548
+p22 <- 6164660
+p23 <- 6180253
+
+r22 <- (h22/p22)
+r22*100000
+r23 <- (h23/p23)
+r23*100000
+
+rs22 <- rbeta(n=1e5,shape1=1/2+h22,shape2=1/2+p22-h22)
+rs23 <- rbeta(n=1e5,shape1=1/2+h23,shape2=1/2+p23-h23)
+
+# problem 7a - difference statistic + 98% confidence interval
+
+diff <- r23-r22
+diff
+quantile(rs23-rs22,c(0.01,0.99))
+
+# problem 7b - relative risk statistic + 98% confidence interval
+
+rr <- r23/r22
+rr
+quantile(rs23/rs22,c(0.01,0.99))
+
+# problem 7c - odds ratio statistic + 98% confidence interval
+
+or <- (r23/(1-r23))/(r22/(1-r22))
+or
+quantile((rs23/(1-rs23))/(rs22/(1-rs22)),c(0.01,0.99))
+
+# problem 7d - log odds ratio statistic + 98% confidence interval
+
+lor <- log((r23/(1-r23))/(r22/(1-r22)))
+lor
+quantile(log((rs23/(1-rs23))/(rs22/(1-rs22))),c(0.01,0.99))
+```
