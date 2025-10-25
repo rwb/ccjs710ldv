@@ -1838,7 +1838,7 @@ quantile(y.sim.sep.ls,c(0.025,0.975))
 boxplot(y.sim.arr.ls,y.sim.adv.ls,y.sim.sep.ls,names=c("Arrest","Advice","Separate"))
 ```
 
-###### script #3 - linear probability model estimated by weighted least squares
+##### script #3 - linear probability model estimated by weighted least squares
 
 ```R
 # weighted least squares
