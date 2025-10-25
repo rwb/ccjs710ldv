@@ -1757,3 +1757,140 @@ lor <- log((r23/(1-r23))/(r22/(1-r22)))
 lor
 quantile(log((rs23/(1-rs23))/(rs22/(1-rs22))),c(0.01,0.99))
 ```
+
+#### R code for Thursday 10/23/25
+
+* reading 1: https://www.jstor.org/stable/pdf/2288920.pdf
+* reading 2: https://www.jstor.org/stable/pdf/2669316.pdf
+
+##### dataset description
+
+* note: ta=1 is arrest, ta=2 is advice, and ta=3 is separate
+* y=0 means there was no recidivism and
+* y=1 means there was at least 1 recidivism event
+
+##### script #1
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+table(d$y,d$ta,exclude=NULL)
+```
+
+##### script #2 - linear probability model
+
+```R
+# linear regression model
+
+linear <- lm(y~1+as.factor(ta),data=d)
+summary(linear)
+
+# interpret the estimates from this analysis
+
+library(mvnfast)
+
+B <- coef(linear)
+B
+V <- vcov(linear)
+V
+D <- linear$df.residual
+D
+
+# simulate coefficients based on the model
+
+sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+
+# look at failure rate distribution for each group
+# par() opens up a plot window with 2 rows and 2 columns
+
+par(mfrow=c(2,2))
+
+# estimated failure rate distribution for arrest group
+
+y.point.est.arr.ls <- as.numeric(B[1]+B[2]*0+B[3]*0)
+y.point.est.arr.ls
+y.sim.arr.ls <- sb[,1]+sb[,2]*0+sb[,3]*0
+hist(y.sim.arr.ls)
+quantile(y.sim.arr.ls,c(0.025,0.975))
+
+# estimated failure rate distribution for advice group
+
+y.point.est.adv.ls <- as.numeric(B[1]+B[2]*1+B[3]*0)
+y.point.est.adv.ls
+y.sim.adv.ls <- sb[,1]+sb[,2]*1+sb[,3]*0
+hist(y.sim.adv.ls)
+quantile(y.sim.adv.ls,c(0.025,0.975))
+
+# estimated failure rate distribution for separate group
+
+y.point.est.sep.ls <- as.numeric(B[1]+B[2]*0+B[3]*1)
+y.point.est.sep.ls
+y.sim.sep.ls <- sb[,1]+sb[,2]*0+sb[,3]*1
+hist(y.sim.sep.ls)
+quantile(y.sim.sep.ls,c(0.025,0.975))
+
+# combine results into a single boxplot
+
+boxplot(y.sim.arr.ls,y.sim.adv.ls,y.sim.sep.ls,names=c("Arrest","Advice","Separate"))
+```
+
+###### script #3 - linear probability model estimated by weighted least squares
+
+```R
+# weighted least squares
+
+d$yhat <- rep(NA,nrow(d))
+d$yhat[d$ta==1] <- y.point.est.arr.ls
+d$yhat[d$ta==2] <- y.point.est.adv.ls
+d$yhat[d$ta==3] <- y.point.est.sep.ls
+d$wt <- 1/(d$yhat*(1-d$yhat))
+wls.model <- lm(y~1+as.factor(ta),data=d,weights=wt)
+summary(wls.model)
+
+B <- coef(wls.model)
+B
+V <- vcov(wls.model)
+V
+D <- wls.model$df.residual
+D
+
+# simulate coefficients based on the model
+
+sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+
+# look at failure rate distribution for each group
+
+par(mfrow=c(2,2))
+
+# estimated failure rate distribution for arrest group
+
+y.point.est.arr <- as.numeric(B[1]+B[2]*0+B[3]*0)
+y.point.est.arr
+y.sim.arr.wls <- sb[,1]+sb[,2]*0+sb[,3]*0
+hist(y.sim.arr.wls)
+quantile(y.sim.arr.wls,c(0.025,0.975))
+
+# estimated failure rate distribution for advice group
+
+y.point.est.adv <- as.numeric(B[1]+B[2]*1+B[3]*0)
+y.point.est.adv
+y.sim.adv.wls <- sb[,1]+sb[,2]*1+sb[,3]*0
+hist(y.sim.adv.wls)
+quantile(y.sim.adv.wls,c(0.025,0.975))
+
+# estimated failure rate distribution for separate group
+
+y.point.est.sep <- as.numeric(B[1]+B[2]*0+B[3]*1)
+y.point.est.sep
+y.sim.sep.wls <- sb[,1]+sb[,2]*0+sb[,3]*1
+hist(y.sim.sep.wls)
+quantile(y.sim.sep.wls,c(0.025,0.975))
+
+# combine results into a single boxplot
+
+boxplot(y.sim.arr.wls,y.sim.adv.wls,y.sim.sep.wls,names=c("Arrest","Advice","Separate"))
+```
