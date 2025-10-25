@@ -1951,3 +1951,50 @@ quantile(p.sim.sep,c(0.025,0.975))
 
 boxplot(p.sim.arr,p.sim.adv,p.sim.sep,names=c("Arrest","Advice","Separate"))
 ```
+
+##### script #5: summarizing the comparisons
+
+```R
+# summary of results
+
+quantile(y.sim.arr.ls-y.sim.adv.ls,c(0.025,0.975))
+quantile(y.sim.arr.wls-y.sim.adv.wls,c(0.025,0.975))
+quantile(p.sim.arr-p.sim.adv,c(0.025,0.975))
+
+quantile(y.sim.arr.ls-y.sim.sep.ls,c(0.025,0.975))
+quantile(y.sim.arr.wls-y.sim.sep.wls,c(0.025,0.975))
+quantile(p.sim.arr-p.sim.sep,c(0.025,0.975))
+```
+
+
+##### script #6: likelihood ratio test
+
+```R
+# likelihood ratio test
+# see handout
+
+# reduced model
+
+Mr <- glm(y~1,data=d,family=binomial)
+summary(Mr)
+logLik(Mr)
+
+# full model
+
+Mf <- glm(y~1+as.factor(ta),data=d,family=binomial)
+summary(Mf)
+logLik(Mf)
+
+# calculate test statistic
+
+ts <- as.numeric(2*(logLik(Mf)-logLik(Mr)))
+ts
+
+# calculate p-value
+
+1-pchisq(q=ts,df=2)
+
+# identify the critical value of the chi-square distribution
+
+qchisq(p=0.95,df=2)
+```
