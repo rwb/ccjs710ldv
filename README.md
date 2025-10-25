@@ -1894,3 +1894,60 @@ quantile(y.sim.sep.wls,c(0.025,0.975))
 
 boxplot(y.sim.arr.wls,y.sim.adv.wls,y.sim.sep.wls,names=c("Arrest","Advice","Separate"))
 ```
+
+##### script #4 - introduction to logistic regression
+
+```R
+# logistic regression
+# Weisburd & Britt, chapter 18
+
+lr.model <- glm(y~1+as.factor(ta),data=d,family=binomial)
+summary(lr.model)
+
+B <- coef(lr.model)
+B
+V <- vcov(lr.model)
+V
+# simulate coefficients based on the model
+
+library(MASS)
+sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
+
+# look at failure rate distribution for each group
+
+par(mfrow=c(2,2))
+
+# estimated failure rate distribution for arrest group
+
+logit.arr <- as.numeric(B[1]+B[2]*0+B[3]*0)
+logit.arr
+exp(logit.arr)/(1+exp(logit.arr))
+sim.logit.arr <- sb[,1]+sb[,2]*0+sb[,3]*0
+p.sim.arr <- exp(sim.logit.arr)/(1+exp(sim.logit.arr))
+hist(p.sim.arr)
+quantile(p.sim.arr,c(0.025,0.975))
+
+# estimated failure rate distribution for advice group
+
+logit.adv <- as.numeric(B[1]+B[2]*1+B[3]*0)
+logit.adv
+exp(logit.adv)/(1+exp(logit.adv))
+sim.logit.adv <- sb[,1]+sb[,2]*1+sb[,3]*0
+p.sim.adv <- exp(sim.logit.adv)/(1+exp(sim.logit.adv))
+hist(p.sim.adv)
+quantile(p.sim.adv,c(0.025,0.975))
+
+# estimated failure rate distribution for separate group
+
+logit.sep <- as.numeric(B[1]+B[2]*0+B[3]*1)
+logit.sep
+exp(logit.sep)/(1+exp(logit.sep))
+sim.logit.sep <- sb[,1]+sb[,2]*0+sb[,3]*1
+p.sim.sep <- exp(sim.logit.sep)/(1+exp(sim.logit.sep))
+hist(p.sim.sep)
+quantile(p.sim.sep,c(0.025,0.975))
+
+# combine results into a single boxplot
+
+boxplot(p.sim.arr,p.sim.adv,p.sim.sep,names=c("Arrest","Advice","Separate"))
+```
