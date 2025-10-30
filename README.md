@@ -2574,3 +2574,40 @@ p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
 or.sim <- (p.sim.t/(1-p.sim.t))/(p.sim.c/(1-p.sim.c))
 quantile(or.sim,c(0.01,0.99))
 ```
+
+##### Q8 Solution
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$y,d$ta,d$aggcirc,exclude=NULL)
+table(d$y,d$arr,d$aggcirc,exclude=NULL)
+
+Mr <- glm(y~1,data=d,family=binomial)
+summary(Mr)
+Lr <- as.numeric(logLik(Mr))
+Lr
+
+Mf <- glm(y~1+arr+aggcirc,data=d,family=binomial)
+summary(Mf)
+Lf <- as.numeric(logLik(Mf))
+Lf
+
+diff <- Lf-Lr
+diff
+2*diff
+
+# critical value of chi-square distribution with 2 df
+
+qchisq(p=0.93,df=2)
+```
+
+*Decision*: since 5.409 > 5.319, we reject Ho (at the 93% confidence level).
