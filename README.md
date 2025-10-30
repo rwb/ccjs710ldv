@@ -2010,3 +2010,234 @@ qchisq(p=0.95,df=2)
 * Q5: Compare your conclusions from the estimation and hypothesis test exercises in Q3 and Q4.
 * Q6: Calculate the classical treatment effect separately for each level of the aggravating circumstances variable using the logistic regression model. For each treatment effect, test the null hypothesis that the treatment effect is equal to zero using a 85% confidence interval (2-tailed).
 * Q7: Calculate the relative risk estimate separately for each level of the aggravating circumstances variable using the logistic regression model. For each relative risk, test the null hypothesis that the statistic is equal to zero using a 85% confidence interval (2-tailed).
+* Q8: Use the logistic regression framework to calculate a likelihood ratio test of the hypothesis that both the treatment and aggravating circumstances coefficients are equal to zero. Conduct your test at the 93% confidence level. What do you conclude?
+
+##### Q1 Solution
+
+* Setup the dataset.
+  
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+table(d$y,d$ta,exclude=NULL)
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$arr,d$ta,exclude=NULL)
+```
+
+* estimate the logistic regression:
+  
+```R
+set.seed(491)
+
+M <- glm(y~1+arr,data=d,family=binomial)
+summary(M)
+
+b0 <- coef(M)[1]
+b0
+b1 <- coef(M)[2]
+b1
+
+# calculate p(y=1|arrest)
+
+py1t <- as.numeric(exp(b0+b1*1)/(1+exp(b0+b1*1)))
+py1t
+
+# calculate p(y=1|no arrest)
+
+py1c <- as.numeric(exp(b0+b1*0)/(1+exp(b0+b1*0)))
+py1c
+```
+
+* estimate classical treatment effect and confidence interval
+
+```R
+# calculate classical treatment effect for the sample
+
+cte <- py1t-py1c
+cte
+
+# extract coefficient vector and variance-covariance matrix
+# of the parameter estimates
+
+B <- coef(M)
+B
+V <- vcov(M)
+V
+
+# simulate coefficients based on the logistic regression model
+
+library(MASS)
+sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
+
+# estimate probability distribution for p(y=1|arrest)
+
+sim.logit.t <- sb[,1]+sb[,2]*1
+p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
+
+# estimate probability distribution for p(y=1|no arrest)
+
+sim.logit.c <- sb[,1]+sb[,2]*0
+p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
+
+# estimate probability distribution for classical treatment effect
+
+cte.sim <- p.sim.t-p.sim.c
+hist(cte.sim)
+quantile(cte.sim,c(0.04,0.96))
+```
+
+##### Q2 Solution
+
+* read the dataset
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$arr,d$ta,exclude=NULL)
+```
+
+* calculate relative risk statistic and confidence interval:
+  
+```R
+set.seed(319)
+
+# calculate relative risk statistic for the sample
+
+rr <- py1t/py1c
+rr
+
+# extract coefficient vector and variance-covariance matrix
+# of the parameter estimates
+
+B <- coef(M)
+B
+V <- vcov(M)
+V
+
+# simulate coefficients based on the logistic regression model
+
+library(MASS)
+sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
+
+# estimate probability distribution for p(y=1|arrest)
+
+sim.logit.t <- sb[,1]+sb[,2]*1
+p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
+
+# estimate probability distribution for p(y=1|no arrest)
+
+sim.logit.c <- sb[,1]+sb[,2]*0
+p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
+
+# estimate probability distribution for relative risk statistic
+
+rr.sim <- p.sim.t/p.sim.c
+hist(rr.sim)
+quantile(rr.sim,c(0.065,0.935))
+```
+
+##### Q3 Solution
+
+* read the dataset
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$y,d$ta,d$aggcirc,exclude=NULL)
+table(d$y,d$arr,d$aggcirc,exclude=NULL)
+
+# we will need this later
+
+mean(d$aggcirc)
+```
+
+* estimate the logistic regression:
+  
+```R
+set.seed(491)
+
+M <- glm(y~1+arr+aggcirc,data=d,family=binomial)
+summary(M)
+
+b0 <- coef(M)[1]
+b0
+b1 <- coef(M)[2]
+b1
+b2 <- coef(M)[3]
+b2
+```
+
+* now that we have our statistical model, we can address the question:
+
+```R
+# calculate p(y=1|arrest)
+
+py1t <- as.numeric(exp(b0+b1*1+b2*0.623002)/(1+exp(b0+b1*1+b2*0.623002)))
+py1t
+
+# calculate p(y=1|no arrest)
+
+py1c <- as.numeric(exp(b0+b1*0+b2*0.623002)/(1+exp(b0+b1*0+b2*0.623002)))
+py1c
+
+# sample estimate of cte holding aggcirc constant at the mean value
+
+py1t-py1c
+
+# calculate the 83% confidence interval
+
+set.seed(702)
+
+# extract coefficient vector and variance-covariance matrix
+# of the parameter estimates
+
+B <- coef(M)
+B
+V <- vcov(M)
+V
+
+# simulate coefficients based on the logistic regression model
+
+library(MASS)
+sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
+
+# estimate probability distribution for p(y=1|arrest)
+
+sim.logit.t <- sb[,1]+sb[,2]*1+sb[,3]*0.623002
+p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
+
+# estimate probability distribution for p(y=1|no arrest)
+
+sim.logit.c <- sb[,1]+sb[,2]*0+sb[,3]*0.623002
+p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
+
+# estimate probability distribution for classical treatment effect
+
+cte.sim <- p.sim.t-p.sim.c
+hist(cte.sim)
+quantile(cte.sim,c(0.085,0.915))
+```
