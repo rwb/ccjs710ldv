@@ -2009,7 +2009,7 @@ qchisq(p=0.95,df=2)
 * Q4: Carry out the same exercise as described in Q3 but use the linear probability model with weighted least squares for your analysis.
 * Q5: Compare your conclusions from the estimation and hypothesis test exercises in Q3 and Q4.
 * Q6: Calculate the classical treatment effect (using the binary treatment variable) separately for each level of the aggravating circumstances variable using the logistic regression model. For each treatment effect, test the null hypothesis that the treatment effect is equal to zero using a 98% confidence interval (2-tailed).
-* Q7: Calculate the odds ratio estimate (using the binary treatment variable) separately for each level of the aggravating circumstances variable using the logistic regression model. For each odds ratio, test the null hypothesis that the statistic is equal to zero using a 98% confidence interval (2-tailed).
+* Q7: Calculate the odds ratio estimate (using the binary treatment variable) separately for each level of the aggravating circumstances variable using the logistic regression model. For each odds ratio, test the null hypothesis that the statistic is equal to 1.0 using a 98% confidence interval (2-tailed).
 * Q8: Use the logistic regression framework to calculate a likelihood ratio test of the hypothesis that both the binary treatment and aggravating circumstances coefficients are equal to zero. Conduct your test at the 93% confidence level. What do you conclude?
 
 ##### Q1 Solution
@@ -2459,4 +2459,118 @@ p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
 
 cte.sim <- p.sim.t-p.sim.c
 quantile(cte.sim,c(0.01,0.99))
+```
+
+##### Q7 Solution:
+
+* read the dataset
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$y,d$ta,d$aggcirc,exclude=NULL)
+table(d$y,d$arr,d$aggcirc,exclude=NULL)
+```
+
+* estimate the logistic regression model
+
+```R
+M <- glm(y~1+arr+aggcirc,data=d,family=binomial)
+summary(M)
+
+b0 <- coef(M)[1]
+b0
+b1 <- coef(M)[2]
+b1
+b2 <- coef(M)[3]
+b2
+```
+
+* calculate the odds ratios
+
+```R
+# calculate p(y=1|arrest, aggcirc=0)
+
+py1t <- as.numeric(exp(b0+b1*1+b2*0)/(1+exp(b0+b1*1+b2*0)))
+py1t
+
+# calculate p(y=1|control, aggcirc=0)
+
+py1c <- as.numeric(exp(b0+b1*0+b2*0)/(1+exp(b0+b1*0+b2*0)))
+py1c
+
+# odds ratio with no aggravating circumstances
+
+(py1t/(1-py1t))/(py1c/(1-py1c))
+
+# calculate p(y=1|arrest, aggcirc=1)
+
+py1t <- as.numeric(exp(b0+b1*1+b2*1)/(1+exp(b0+b1*1+b2*1)))
+py1t
+
+# calculate p(y=1|control, aggcirc=1)
+
+py1c <- as.numeric(exp(b0+b1*0+b2*1)/(1+exp(b0+b1*0+b2*1)))
+py1c
+
+# odds ratio with at least one aggravating circumstance
+
+(py1t/(1-py1t))/(py1c/(1-py1c))
+```
+
+* Next, we estimate the 98% confidence interval for each odds ratio estimate:
+
+```R
+set.seed(143)
+
+# extract coefficient vector and variance-covariance matrix
+# of the parameter estimates
+
+B <- coef(M)
+B
+V <- vcov(M)
+V
+
+# simulate coefficients based on the logistic regression model
+
+library(MASS)
+sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
+
+# estimate distribution for p(y=1|arrest, aggcirc=0)
+
+sim.logit.t <- sb[,1]+sb[,2]*1+sb[,3]*0
+p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
+
+# estimate distribution for p(y=1|no arrest, aggcirc=0)
+
+sim.logit.c <- sb[,1]+sb[,2]*0+sb[,3]*0
+p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
+
+# estimate distribution for classical treatment effect
+
+or.sim <- (p.sim.t/(1-p.sim.t))/(p.sim.c/(1-p.sim.c))
+quantile(or.sim,c(0.01,0.99))
+
+# estimate distribution for p(y=1|arrest, aggcirc=1)
+
+sim.logit.t <- sb[,1]+sb[,2]*1+sb[,3]*1
+p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
+
+# estimate distribution for p(y=1|no arrest, aggcirc=1)
+
+sim.logit.c <- sb[,1]+sb[,2]*0+sb[,3]*1
+p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
+
+# estimate distribution for classical treatment effect
+
+or.sim <- (p.sim.t/(1-p.sim.t))/(p.sim.c/(1-p.sim.c))
+quantile(or.sim,c(0.01,0.99))
 ```
