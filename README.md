@@ -2096,7 +2096,7 @@ quantile(cte.sim,c(0.04,0.96))
 
 ##### Q2 Solution
 
-* read the dataset
+* read the dataset and estimate the logistic regression model
 
 ```R
 # read the dataset
@@ -2110,6 +2110,26 @@ d$arr[d$ta==1] <- 1
 d$arr[d$ta %in% 2:3] <- 0
 
 table(d$arr,d$ta,exclude=NULL)
+
+# estimate the logistic regression model
+
+M <- glm(y~1+arr,data=d,family=binomial)
+summary(M)
+
+b0 <- coef(M)[1]
+b0
+b1 <- coef(M)[2]
+b1
+
+# calculate p(y=1|arrest)
+
+py1t <- as.numeric(exp(b0+b1*1)/(1+exp(b0+b1*1)))
+py1t
+
+# calculate p(y=1|no arrest)
+
+py1c <- as.numeric(exp(b0+b1*0)/(1+exp(b0+b1*0)))
+py1c
 ```
 
 * calculate relative risk statistic and confidence interval:
