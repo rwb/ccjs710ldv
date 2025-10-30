@@ -2261,3 +2261,80 @@ cte.sim <- p.sim.t-p.sim.c
 hist(cte.sim)
 quantile(cte.sim,c(0.085,0.915))
 ```
+
+##### Q4 Solution
+
+* read the dataset
+
+```R
+# read the dataset
+
+d <- read.csv(file="minn.txt",header=T,sep=",")
+
+# contingency table with y on the 2 rows and ta on the 3 columns
+
+d$arr <- rep(NA,nrow(d))
+d$arr[d$ta==1] <- 1
+d$arr[d$ta %in% 2:3] <- 0
+
+table(d$y,d$ta,d$aggcirc,exclude=NULL)
+table(d$y,d$arr,d$aggcirc,exclude=NULL)
+
+# we will need this later
+
+mean(d$aggcirc)
+```
+
+* estimate the initial linear regression:
+  
+```R
+L <- lm(y~1+arr+aggcirc,data=d)
+summary(L)
+
+b0 <- coef(L)[1]
+b0
+b1 <- coef(L)[2]
+b1
+b2 <- coef(L)[3]
+b2
+```
+
+* now, estimate the weighted least squares model
+
+```R
+# weighted least squares
+
+d$yhat <- b0+b1*d$arr+b2*d$aggcirc
+d$wt <- 1/(d$yhat*(1-d$yhat))
+W <- lm(y~1+arr+aggcirc,data=d,weights=wt)
+summary(W)
+
+B <- coef(W)
+B
+V <- vcov(W)
+V
+D <- W$df.residual
+D
+
+# simulate sampling distribution of coefficients based on the wls model
+# note here we are using the multivariate t-distribution
+
+set.seed(515)
+
+library(mvnfast)
+sb <- rmvt(n=1e5,mu=B,sigma=V,df=D)
+
+# estimated failure rate distribution for arrest group
+
+y.sim.arr.wls <- sb[,1]+sb[,2]*1+sb[,3]*0.623002
+min(y.sim.arr.wls)
+
+# estimated failure rate distribution for no arrest group
+
+y.sim.ctl.wls <- sb[,1]+sb[,2]*0+sb[,3]*0.623002
+
+# calculate the 83% confidence interval for the classical treatment effect
+
+cte.sim <- y.sim.arr.wls-y.sim.ctl.wls
+quantile(cte.sim,c(0.085,0.915))
+```
