@@ -1957,12 +1957,7 @@ boxplot(p.sim.arr,p.sim.adv,p.sim.sep,names=c("Arrest","Advice","Separate"))
 ```R
 # summary of results
 
-quantile(y.sim.arr.ls-y.sim.adv.ls,c(0.025,0.975))
-quantile(y.sim.arr.wls-y.sim.adv.wls,c(0.025,0.975))
 quantile(p.sim.arr-p.sim.adv,c(0.025,0.975))
-
-quantile(y.sim.arr.ls-y.sim.sep.ls,c(0.025,0.975))
-quantile(y.sim.arr.wls-y.sim.sep.wls,c(0.025,0.975))
 quantile(p.sim.arr-p.sim.sep,c(0.025,0.975))
 ```
 
