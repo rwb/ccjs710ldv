@@ -2341,8 +2341,8 @@ quantile(cte.sim,c(0.085,0.915))
 
 ##### Q5: Compare confidence intervals from Q3 and Q4
 
-|: Quantity : | Logistic Regression :| Weighted Least Squares :|
-|: -----|: --:|: --:|
-|: Point Estimate | -0.102 :| -0.101 :|
-|: 83% LCL | -0.156 :| -0.160 :| 
-|: 83% UCL | -0.038 :| -0.042 :|
+| Quantity | Logistic Regression | Weighted Least Squares |
+|:------|---:|---:|
+| Point Estimate | -0.102 | -0.101 |
+| 83% LCL | -0.156 | -0.160 | 
+| 83% UCL | -0.038 | -0.042 |
