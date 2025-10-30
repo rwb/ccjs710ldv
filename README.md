@@ -2077,17 +2077,17 @@ V
 library(MASS)
 sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
 
-# estimate probability distribution for p(y=1|arrest)
+# estimate distribution for p(y=1|arrest)
 
 sim.logit.t <- sb[,1]+sb[,2]*1
 p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
 
-# estimate probability distribution for p(y=1|no arrest)
+# estimate distribution for p(y=1|no arrest)
 
 sim.logit.c <- sb[,1]+sb[,2]*0
 p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
 
-# estimate probability distribution for classical treatment effect
+# estimate distribution for classical treatment effect
 
 cte.sim <- p.sim.t-p.sim.c
 hist(cte.sim)
@@ -2155,17 +2155,17 @@ V
 library(MASS)
 sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
 
-# estimate probability distribution for p(y=1|arrest)
+# estimate distribution for p(y=1|arrest)
 
 sim.logit.t <- sb[,1]+sb[,2]*1
 p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
 
-# estimate probability distribution for p(y=1|no arrest)
+# estimate distribution for p(y=1|no arrest)
 
 sim.logit.c <- sb[,1]+sb[,2]*0
 p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
 
-# estimate probability distribution for relative risk statistic
+# estimate distribution for relative risk statistic
 
 rr.sim <- p.sim.t/p.sim.c
 hist(rr.sim)
@@ -2245,17 +2245,17 @@ V
 library(MASS)
 sb <- mvrnorm(n=1e5,mu=B,Sigma=V)
 
-# estimate probability distribution for p(y=1|arrest)
+# estimate distribution for p(y=1|arrest)
 
 sim.logit.t <- sb[,1]+sb[,2]*1+sb[,3]*0.623002
 p.sim.t <- exp(sim.logit.t)/(1+exp(sim.logit.t))
 
-# estimate probability distribution for p(y=1|no arrest)
+# estimate distribution for p(y=1|no arrest)
 
 sim.logit.c <- sb[,1]+sb[,2]*0+sb[,3]*0.623002
 p.sim.c <- exp(sim.logit.c)/(1+exp(sim.logit.c))
 
-# estimate probability distribution for classical treatment effect
+# estimate distribution for classical treatment effect
 
 cte.sim <- p.sim.t-p.sim.c
 hist(cte.sim)
