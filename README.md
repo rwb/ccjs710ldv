@@ -1998,3 +1998,13 @@ ts
 
 qchisq(p=0.95,df=2)
 ```
+
+#### R code for Thursday 10/30/25
+
+* We will be going back over some of last week's code today.
+* Then, with the basics in hand, we need to turn our attention to some exam-related questions.
+* Q1: Recode the independent variable into a 2-category variable that is coded 1 when people are assigned to the arrest group and 0 when people are assigned to either the separate or advice groups. Then, estimate a logistic regression model with the 2-category treatment variable as the independent variable and recidivism (y) as the dependent or outcome variable. Estimate the classical treatment effect and test the null hypothesis that the treatment effect is equal to zero at the 92% confidence level (two-tailed).
+* Q2: Using the same logistic regression model as in Q1, estimate the relative risk statistic and test the null hypothesis that the relative risk statistic is equal to 1.0 at the 87% confidence level (two-tailed).
+* Q3: Estimate a new logistic regression model using the binary treatment variable and controlling for aggravating circumstances; then calculate the classical treatment effect holding the aggravating circumstances variable constant at its mean value. Test the null hypothesis that the classical treatment effect is equal to zero with aggravating circumstances held constant at its mean value (this will be a 2-tailed test and you will use a 83% confidence interval for your test).
+* Q4: Carry out the same exercise as described in Q3 but use the linear probability model with weighted least squares for your analysis.
+* Q5: Compare your conclusions from the estimation and hypothesis test exercises in Q3 and Q4.
