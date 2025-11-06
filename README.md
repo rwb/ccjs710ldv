@@ -2629,3 +2629,6 @@ qchisq(p=0.93,df=2)
 <p align="center">
 <img src="/gfiles/stasny.png" width="750px">
 </p>
+
+* Research question: "Data from large-scale sample surveys are often used to estimate the probability that an individual falls into a particular survey classification or has a certain characteristic. For example, data from the National Crime Survey (NCS) are used to estimate the probability of being victimized, and
+data from the Current Population Survey are used to estimate the probability of being unemployed" (Stasny, 1991:296).
