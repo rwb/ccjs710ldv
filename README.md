@@ -2622,6 +2622,7 @@ qchisq(p=0.93,df=2)
 ### Partial Identification
 
 * Final exam material begins here
+* Analytical foundation is based on Manski (1993; [link](https://www.jstor.org/stable/pdf/271005.pdf))
 * Case study: examining victimization in a survey
 * Motivating empirical work: Stasny (1991; [link](https://www.jstor.org/stable/pdf/2290561.pdf)).
 
