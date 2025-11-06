@@ -2167,9 +2167,16 @@ hist(rr.sim)
 quantile(rr.sim,c(0.065,0.935))
 ```
 
+#### R code for Thursday 11/6/25
+
+* Reminder #1: no class next week due to ASC meetings
+* Reminder #2: exam scheduled for 2 weeks from today (same format as last exam)
+* Note: exam will cover material through the practice problems #1-8
+* We are continuing with the solutions to the practice problems:
+
 ##### Q3 Solution
 
-* read the dataset
+* Q3: Estimate a new logistic regression model using the binary treatment variable and controlling for aggravating circumstances; then calculate the classical treatment effect holding the aggravating circumstances variable constant at its mean value. Test the null hypothesis that the classical treatment effect is equal to zero with aggravating circumstances held constant at its mean value (this will be a 2-tailed test and you will use a 83% confidence interval for your test).
 
 ```R
 # read the dataset
@@ -2259,7 +2266,7 @@ quantile(cte.sim,c(0.085,0.915))
 
 ##### Q4 Solution
 
-* read the dataset
+* Q4: Carry out the same exercise as described in Q3 but use the linear probability model with weighted least squares for your analysis.
 
 ```R
 # read the dataset
@@ -2334,8 +2341,10 @@ cte.sim <- y.sim.arr.wls-y.sim.ctl.wls
 quantile(cte.sim,c(0.085,0.915))
 ```
 
-##### Q5 Solution: Compare confidence intervals from Q3 and Q4
+##### Q5 Solution: 
 
+* Q5: Compare your conclusions from the estimation and hypothesis test exercises in Q3 and Q4.
+ 
 | Quantity | Logistic Regression | Weighted Least Squares |
 |:------|---:|---:|
 | Point Estimate | -0.102 | -0.101 |
@@ -2344,8 +2353,8 @@ quantile(cte.sim,c(0.085,0.915))
 
 ##### Q6 Solution:
 
-* Start by reading in the dataset and doing the recode on the treatment variable:
-  
+* Q6: Calculate the classical treatment effect (using the binary treatment variable) separately for each level of the aggravating circumstances variable using the logistic regression model. For each treatment effect, test the null hypothesis that the treatment effect is equal to zero using a 98% confidence interval (2-tailed).
+
 ```R
 # read the dataset
 
@@ -2458,8 +2467,8 @@ quantile(cte.sim,c(0.01,0.99))
 
 ##### Q7 Solution:
 
-* read the dataset
-
+* Q7: Calculate the odds ratio estimate (using the binary treatment variable) separately for each level of the aggravating circumstances variable using the logistic regression model. For each odds ratio, test the null hypothesis that the statistic is equal to 1.0 using a 98% confidence interval (2-tailed).
+  
 ```R
 # read the dataset
 
@@ -2572,6 +2581,8 @@ quantile(or.sim,c(0.01,0.99))
 
 ##### Q8 Solution
 
+* Q8: Use the logistic regression framework to calculate a likelihood ratio test of the hypothesis that both the binary treatment and aggravating circumstances coefficients are equal to zero. Conduct your test at the 93% confidence level. What do you conclude?
+
 ```R
 # read the dataset
 
@@ -2606,3 +2617,8 @@ qchisq(p=0.93,df=2)
 ```
 
 *Decision*: since 5.409 > 5.319, we reject Ho (at the 93% confidence level; remember Ho is that coefficients for both arr and aggcirc are equal to zero).
+
+
+##### Partial Identification
+
+* 
