@@ -2618,7 +2618,6 @@ qchisq(p=0.93,df=2)
 
 *Decision*: since 5.409 > 5.319, we reject Ho (at the 93% confidence level; remember Ho is that coefficients for both arr and aggcirc are equal to zero).
 
-
 ### Partial Identification
 
 * Final exam material begins here
@@ -2632,3 +2631,166 @@ qchisq(p=0.93,df=2)
 
 * Research question: "Data from large-scale sample surveys are often used to estimate the probability that an individual falls into a particular survey classification or has a certain characteristic. For example, data from the National Crime Survey (NCS) are used to estimate the probability of being victimized, and
 data from the Current Population Survey are used to estimate the probability of being unemployed" (Stasny, 1991:296).
+* The unit of analysis in these data is individual households and the estimator if the fraction of households that report at least one victimization in the NCS.
+* Let's begin our work by looking at domain U/C/L where U = urban, C = central city, and L = low poverty.
+* Within this domain, we have 156 hh's that reported at least one victimization in the NCS, 555 hh's that reported no victimizations, and 104 hh's contributed no information to the survey (i.e., they are missing).
+* Key question here is what we should do about the missing cases.
+* This problem arises in almost all surveys and sometimes arises in administrative data (sometimes in quite surprising ways).
+
+##### Approach #1
+
+* Discard the missing observations.
+* R code:
+
+```R
+y <- c(rep(0,555),rep(1,156),rep(NA,104))
+t <- table(y,exclude=NULL)
+t
+theta <- t[2]/(t[1]+t[2])
+theta
+
+# calculate a 90% confidence interval using Clopper-Pearson method
+
+theta.lcl <- qbeta(p=0.05,shape1=156,shape2=1+555)
+theta.lcl
+theta.ucl <- qbeta(p=0.95,shape1=1+156,shape2=555)
+theta.ucl
+```
+
+* Output:
+
+```Rout
+> y <- c(rep(0,555),rep(1,156),rep(NA,104))
+> t <- table(y,exclude=NULL)
+> t
+y
+   0    1 <NA> 
+ 555  156  104 
+> theta <- t[2]/(t[1]+t[2])
+> theta
+        1 
+0.2194093 
+> 
+> # calculate a 90% confidence interval using Clopper-Pearson method
+> 
+> theta.lcl <- qbeta(p=0.05,shape1=156,shape2=1+555)
+> theta.lcl
+[1] 0.1940751
+> theta.ucl <- qbeta(p=0.95,shape1=1+156,shape2=555)
+> theta.ucl
+[1] 0.2464858
+>
+```
+
+* So, our point estimate of the fraction of households victimized within this domain is 0.219 with a 90% confidence interval of [0.194,0.246].
+* This inference is based on the assumption that the missing cases are missing-at-random (MAR).
+
+##### Approach #1a
+
+* Let's view the MAR analysis through another lens.
+* For this approach, we need to use the law of total probability
+
+```R
+library(boot)
+set.seed(382)
+y <- c(rep(0,555),rep(1,156),rep(NA,104))
+N <- length(y)
+N
+t <- table(y,exclude=NULL)
+t
+
+theta.r1 <- t[2]/(t[1]+t[2])
+theta.r1
+pi.r1 <- (t[1]+t[2])/(t[1]+t[2]+t[3])
+pi.r1
+pi.r0 <- 1-pi.r1
+pi.r0
+theta.r0 <- theta.r1
+theta <- theta.r1*pi.r1+theta.r0*pi.r0
+theta
+
+id <- seq(from=1,to=815,by=1)
+id.y <- data.frame(id,y)
+
+tboot <- function(data,i){
+  b <- data[i,]
+  tb <- table(b$y,exclude=NULL)
+  theta.r1b <- tb[2]/(tb[1]+tb[2])
+  pi.r1b <- (tb[1]+tb[2])/(tb[1]+tb[2]+tb[3])
+  pi.r0b <- 1-pi.r1b
+  theta.r0b <- theta.r1b
+  thetab <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
+  return(thetab)
+}
+
+thetadist <- boot(data=id.y,statistic=tboot,R=1e4)
+boot.ci(thetadist,conf=0.9,type="bca")
+
+```
+
+* Output:
+
+```Rout
+> library(boot)
+> set.seed(382)
+> y <- c(rep(0,555),rep(1,156),rep(NA,104))
+> N <- length(y)
+> N
+[1] 815
+> t <- table(y,exclude=NULL)
+> t
+y
+   0    1 <NA> 
+ 555  156  104 
+> 
+> theta.r1 <- t[2]/(t[1]+t[2])
+> theta.r1
+        1 
+0.2194093 
+> pi.r1 <- (t[1]+t[2])/(t[1]+t[2]+t[3])
+> pi.r1
+        0 
+0.8723926 
+> pi.r0 <- 1-pi.r1
+> pi.r0
+        0 
+0.1276074 
+> theta.r0 <- theta.r1
+> theta <- theta.r1*pi.r1+theta.r0*pi.r0
+> theta
+        1 
+0.2194093 
+> 
+> id <- seq(from=1,to=815,by=1)
+> id.y <- data.frame(id,y)
+> 
+> tboot <- function(data,i){
++   b <- data[i,]
++   tb <- table(b$y,exclude=NULL)
++   theta.r1b <- tb[2]/(tb[1]+tb[2])
++   pi.r1b <- (tb[1]+tb[2])/(tb[1]+tb[2]+tb[3])
++   pi.r0b <- 1-pi.r1b
++   theta.r0b <- theta.r1b
++   thetab <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
++   return(thetab)
++ }
+> 
+> thetadist <- boot(data=id.y,statistic=tboot,R=1e4)
+> boot.ci(thetadist,conf=0.9,type="bca")
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 10000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = thetadist, conf = 0.9, type = "bca")
+
+Intervals : 
+Level       BCa          
+90%   ( 0.1948,  0.2458 )  
+Calculations and Intervals on Original Scale
+>  
+```
+
+* So, our point estimate of the fraction of households victimized within this domain is 0.219 with a 90% confidence interval of [0.194,0.246].
+
+
+
