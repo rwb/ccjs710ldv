@@ -2699,9 +2699,9 @@ N
 t <- table(y,exclude=NULL)
 t
 
-theta.r1 <- t[2]/(t[1]+t[2])
+theta.r1 <- as.numeric(t[2]/(t[1]+t[2]))
 theta.r1
-pi.r1 <- (t[1]+t[2])/(t[1]+t[2]+t[3])
+pi.r1 <- as.numeric((t[1]+t[2])/(t[1]+t[2]+t[3]))
 pi.r1
 pi.r0 <- 1-pi.r1
 pi.r0
@@ -2709,14 +2709,14 @@ theta.r0 <- theta.r1
 theta <- theta.r1*pi.r1+theta.r0*pi.r0
 theta
 
-id <- seq(from=1,to=815,by=1)
+id <- seq(from=1,to=N,by=1)
 id.y <- data.frame(id,y)
 
 tboot <- function(data,i){
   b <- data[i,]
   tb <- table(b$y,exclude=NULL)
-  theta.r1b <- tb[2]/(tb[1]+tb[2])
-  pi.r1b <- (tb[1]+tb[2])/(tb[1]+tb[2]+tb[3])
+  theta.r1b <- as.numeric(tb[2]/(tb[1]+tb[2]))
+  pi.r1b <- as.numeric((tb[1]+tb[2])/(tb[1]+tb[2]+tb[3]))
   pi.r0b <- 1-pi.r1b
   theta.r0b <- theta.r1b
   thetab <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
@@ -2743,32 +2743,28 @@ y
    0    1 <NA> 
  555  156  104 
 > 
-> theta.r1 <- t[2]/(t[1]+t[2])
+> theta.r1 <- as.numeric(t[2]/(t[1]+t[2]))
 > theta.r1
-        1 
-0.2194093 
-> pi.r1 <- (t[1]+t[2])/(t[1]+t[2]+t[3])
+[1] 0.2194093
+> pi.r1 <- as.numeric((t[1]+t[2])/(t[1]+t[2]+t[3]))
 > pi.r1
-        0 
-0.8723926 
+[1] 0.8723926
 > pi.r0 <- 1-pi.r1
 > pi.r0
-        0 
-0.1276074 
+[1] 0.1276074
 > theta.r0 <- theta.r1
 > theta <- theta.r1*pi.r1+theta.r0*pi.r0
 > theta
-        1 
-0.2194093 
+[1] 0.2194093
 > 
-> id <- seq(from=1,to=815,by=1)
+> id <- seq(from=1,to=N,by=1)
 > id.y <- data.frame(id,y)
 > 
 > tboot <- function(data,i){
 +   b <- data[i,]
 +   tb <- table(b$y,exclude=NULL)
-+   theta.r1b <- tb[2]/(tb[1]+tb[2])
-+   pi.r1b <- (tb[1]+tb[2])/(tb[1]+tb[2]+tb[3])
++   theta.r1b <- as.numeric(tb[2]/(tb[1]+tb[2]))
++   pi.r1b <- as.numeric((tb[1]+tb[2])/(tb[1]+tb[2]+tb[3]))
 +   pi.r0b <- 1-pi.r1b
 +   theta.r0b <- theta.r1b
 +   thetab <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
@@ -2787,10 +2783,10 @@ Intervals :
 Level       BCa          
 90%   ( 0.1948,  0.2458 )  
 Calculations and Intervals on Original Scale
->  
+> 
 ```
 
-* So, our point estimate of the fraction of households victimized within this domain is 0.219 with a 90% confidence interval of [0.194,0.246].
+* So, our point estimate of the fraction of households victimized within this domain is 0.219 with a 90% confidence interval of [0.195,0.246].
 
 
 
