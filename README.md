@@ -2872,6 +2872,4 @@ theta.ucl
 * If the Clopper-Pearson procedure is used to calculate the confidence limits for a bound, those limits should correspond to the 0.025 and 0.975 percentiles of the sampling distribution.
 * Normally, these quantiles would be construed as the limits of a 95% confidence interval.
 * And, if one were to study each bound separately, the coverage or trap rate for each bound would be at least 97.5%.
-* However, as Manski shows, these *Bonferroni-corrected* confidence limits jointly trap the population bounds at least at the 90% rate so that:
-
-$p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90 $
+* However, as Manski shows, these *Bonferroni-corrected* confidence limits jointly trap the population bounds at least at the 90% rate so that $p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90 $
