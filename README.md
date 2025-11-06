@@ -2705,7 +2705,13 @@ pi.r1 <- as.numeric((t[1]+t[2])/(t[1]+t[2]+t[3]))
 pi.r1
 pi.r0 <- 1-pi.r1
 pi.r0
+
+# here is the critical assumption
+
 theta.r0 <- theta.r1
+
+# and here is LTP applied to this problem
+
 theta <- theta.r1*pi.r1+theta.r0*pi.r0
 theta
 
@@ -2725,7 +2731,6 @@ tboot <- function(data,i){
 
 thetadist <- boot(data=id.y,statistic=tboot,R=1e4)
 boot.ci(thetadist,conf=0.9,type="bca")
-
 ```
 
 * Output:
@@ -2752,7 +2757,13 @@ y
 > pi.r0 <- 1-pi.r1
 > pi.r0
 [1] 0.1276074
+> 
+> # here is the critical assumption
+> 
 > theta.r0 <- theta.r1
+> 
+> # and here is LTP applied to this problem
+> 
 > theta <- theta.r1*pi.r1+theta.r0*pi.r0
 > theta
 [1] 0.2194093
