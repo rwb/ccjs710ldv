@@ -2866,6 +2866,105 @@ theta.ucl <- qbeta(p=0.975,shape1=1+156+104,shape2=555)
 theta.ucl
 ```
 
+* Output:
+
+```Rout
+> library(boot)
+> set.seed(409)
+> y <- c(rep(0,555),rep(1,156),rep(NA,104))
+> N <- length(y)
+> N
+[1] 815
+> t <- table(y,exclude=NULL)
+> t
+y
+   0    1 <NA> 
+ 555  156  104 
+> 
+> theta.r1 <- as.numeric(t[2]/(t[1]+t[2]))
+> theta.r1
+[1] 0.2194093
+> pi.r1 <- as.numeric((t[1]+t[2])/(t[1]+t[2]+t[3]))
+> pi.r1
+[1] 0.8723926
+> pi.r0 <- 1-pi.r1
+> pi.r0
+[1] 0.1276074
+> 
+> # lower bound
+> 
+> theta.r0 <- 0
+> theta.lb <- theta.r1*pi.r1+theta.r0*pi.r0
+> theta.lb
+[1] 0.191411
+> 
+> # upper bound
+> 
+> theta.r0 <- 1
+> theta.ub <- theta.r1*pi.r1+theta.r0*pi.r0
+> theta.ub
+[1] 0.3190184
+> 
+> id <- seq(from=1,to=N,by=1)
+> id.y <- data.frame(id,y)
+> 
+> tboot <- function(data,i){
++   b <- data[i,]
++   tb <- table(b$y,exclude=NULL)
++   theta.r1b <- as.numeric(tb[2]/(tb[1]+tb[2]))
++   pi.r1b <- as.numeric((tb[1]+tb[2])/(tb[1]+tb[2]+tb[3]))
++   pi.r0b <- 1-pi.r1b
++   theta.r0b <- 0
++   thetab.lb <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
++   theta.r0b <- 1
++   thetab.ub <- theta.r1b*pi.r1b+theta.r0b*pi.r0b
++   return(c(thetab.lb,thetab.ub))
++ }
+> 
+> thetadist <- boot(data=id.y,statistic=tboot,R=1e4)
+> boot.ci(thetadist,conf=0.95,type="bca",index=1)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 10000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = thetadist, conf = 0.95, type = "bca", index = 1)
+
+Intervals : 
+Level       BCa          
+95%   ( 0.1656,  0.2196 )  
+Calculations and Intervals on Original Scale
+> boot.ci(thetadist,conf=0.95,type="bca",index=2)
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 10000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = thetadist, conf = 0.95, type = "bca", index = 2)
+
+Intervals : 
+Level       BCa          
+95%   ( 0.2871,  0.3509 )  
+Calculations and Intervals on Original Scale
+> 
+> # lower bound B-corrected confidence interval 
+> 
+> theta.lcl <- qbeta(p=0.025,shape1=156,shape2=1+555+104)
+> theta.lcl
+[1] 0.1649436
+> theta.ucl <- qbeta(p=0.975,shape1=1+156,shape2=555+104)
+> theta.ucl
+[1] 0.2201315
+> 
+> # upper bound B-corrected confidence interval 
+> 
+> theta.lcl <- qbeta(p=0.025,shape1=156+104,shape2=1+555)
+> theta.lcl
+[1] 0.2871088
+> theta.ucl <- qbeta(p=0.975,shape1=1+156+104,shape2=555)
+> theta.ucl
+[1] 0.3522434
+>
+```
+
 * For MAR point estimates, the confidence intervals have the usual 1 - α coverage interpretation.
 * For lower and upper bound parameter estimates, some additional explanation is required.
 * Assume that inferential interest is focused on a 1 − α confidence interval where α = 0.10 (i.e., a 90% confidence interval).
