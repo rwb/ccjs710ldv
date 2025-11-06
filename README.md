@@ -2874,7 +2874,4 @@ theta.ucl
 * And, if one were to study each bound separately, the coverage or trap rate for each bound would be at least 97.5%.
 * However, as Manski shows, these *Bonferroni-corrected* confidence limits jointly trap the population bounds at least at the 90% rate so that:
 
- \begin{displaymath}
-p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap
-  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90
-\end{displaymath}
+$p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90 $
