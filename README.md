@@ -2618,6 +2618,10 @@ qchisq(p=0.93,df=2)
 
 *Decision*: since 5.409 > 5.319, we reject Ho (at the 93% confidence level; remember Ho is that coefficients for both arr and aggcirc are equal to zero).
 
+~~~
+
+## Final Exam Material Begins Here
+
 ### Partial Identification
 
 * Final exam material begins here
