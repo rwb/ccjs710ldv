@@ -3176,7 +3176,7 @@ region         3.257293
 ```
 
 * What conclusions can we draw about the difference in homicide rates between southern states and the rest of the US?
-* Let's consider two states (one in the south and one outside the south) that each have a population of 4.56M people.
+* Let's consider two states (one in the south and one outside the south) that each have a population of 4.56M people (which is approximately the median state population size in 2018).
 
 ```R
 set.seed(387)
