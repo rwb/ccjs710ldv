@@ -2972,6 +2972,6 @@ Calculations and Intervals on Original Scale
 * For MAR point estimates, the confidence intervals have the usual 1 - α coverage interpretation.
 * For lower and upper bound parameter estimates, some additional explanation is required.
 * Assume that inferential interest is focused on a 1 − α confidence interval where α = 0.10 (i.e., a 90% confidence interval).
-* If we calculate the 95% confidence limits for a single bound, those limits should correspond to the 0.025 and 0.975 percentiles of the sampling distribution for the bound.
+* If we calculate the 95% confidence limits, *C*, for a single bound, those limits should correspond to the 0.025 and 0.975 percentiles of the sampling distribution for the bound.
 * And, if one were to study each bound separately, the coverage or trap rate for each bound would be at least 95%.
 * However, as Manski shows, we can use the 95% confidence limits for each bound to construct *Bonferroni-corrected* confidence limits that jointly trap the population bounds at least at the 90% rate so that $p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90.$
