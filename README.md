@@ -3081,6 +3081,10 @@ $p(y=k | \lambda) = \frac{1}{k!} \times \exp(-\lambda) \lambda^k$
 
 where *k* is free to vary in integers from 0 to no upper bound (infinity).
 
+* Next, to parameterize $\lambda$ in regression form, we can specify:
+
+$E(\lambda_i) = \exp(\alpha + \beta x_i + \log($\text{population size})$
+
 * An important issue arising in analysis of crime counts is that the outcome values are integers, there is no upper limit to the distribution, and there is a true zero value.
 * If we are looking at crime counts across geographic units such as nations, states, counties, or cities, we will encounter wide variation in the population sizes.
 * Consider the following dataset:
