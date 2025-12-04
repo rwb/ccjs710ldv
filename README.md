@@ -3227,3 +3227,57 @@ quantile(south.rate.dist-oth.rate.dist,c(0.04,0.96))
 >
 ```
 
+* Checking on the coverage of the confidence interval procedure.
+
+```R
+set.seed(381)
+
+library(MASS)
+
+lam <- exp(5.63283)
+lam
+
+trap <- vector()
+
+for(i in 1:1e4){
+  y <- rpois(n=50,lambda=lam)
+  M <- glm(y~1,family=poisson)
+  b <- coef(M)
+  v <- vcov(M)
+  sb <- mvrnorm(n=1e5,mu=b,Sigma=v)
+  rt <- exp(sb)
+  lcl <- quantile(rt,0.025)
+  ucl <- quantile(rt,0.975)
+  trap[i] <- ifelse(lcl<=lam & ucl>=lam,1,0)
+  }
+
+mean(trap)
+```
+
+* Output:
+
+```Rout
+> library(MASS)
+> 
+> lam <- exp(5.63283)
+> lam
+[1] 279.4518
+> 
+> trap <- vector()
+> 
+> for(i in 1:1e4){
++   y <- rpois(n=50,lambda=lam)
++   M <- glm(y~1,family=poisson)
++   b <- coef(M)
++   v <- vcov(M)
++   sb <- mvrnorm(n=1e5,mu=b,Sigma=v)
++   rt <- exp(sb)
++   lcl <- quantile(rt,0.025)
++   ucl <- quantile(rt,0.975)
++   trap[i] <- ifelse(lcl<=lam & ucl>=lam,1,0)
++   }
+> 
+> mean(trap)
+[1] 0.9475
+>
+```
