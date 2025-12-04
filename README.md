@@ -2975,3 +2975,138 @@ Calculations and Intervals on Original Scale
 * If we calculate the 95% confidence limits, *C*, for a single bound, those limits should correspond to the 0.025 and 0.975 percentiles of the sampling distribution for the bound.
 * And, if one were to study each bound separately, the coverage or trap rate for each bound would be at least 95%.
 * However, as Manski shows, we can use the 95% confidence limits for each bound to construct *Bonferroni-corrected* confidence limits that jointly trap the population bounds at least at the 90% rate so that $p(\mbox{LB}(\theta) \in C_{\mbox{LB}(\hat{\theta})} \cap  \mbox{UB}(\theta) \in C_{\mbox{UB}(\hat{\theta})}) \ge 0.90.$
+
+### Notes for Thursday 12/4/25
+
+* At the end of the partial identification material we covered previously, I mentioned the concept of a confidence interval for the bounds.
+* Here is a simulation to demonstrate the calculation of a 95% confidence interval on a set of lower and upper bounds for a proportion.
+
+```R
+set.seed(202)
+
+yes <- 30
+no <- 60
+missing <- 10
+N <- yes+no+missing
+N
+
+plb <- vector()
+pub <- vector()
+beta.lb.lcl <- vector()
+beta.lb.ucl <- vector()
+beta.ub.lcl <- vector()
+beta.ub.ucl <- vector()
+
+for(i in 1:1e6){
+  S <- rmultinom(n=1,size=N,prob=c(yes/N,no/N,missing/N))
+
+  r <- S[1]
+  plb[i] <- r/N
+  pub[i] <- (r+S[3])/N
+
+  beta.lb.lcl[i] <- qbeta(p=0.0125,shape1=1/2+r,shape2=1/2+N-r)
+  beta.lb.ucl[i] <- qbeta(p=0.9875,shape1=1/2+r,shape2=1/2+N-r)
+  beta.ub.lcl[i] <- qbeta(p=0.0125,shape1=1/2+r+S[3],shape2=1/2+N-(r+S[3]))
+  beta.ub.ucl[i] <- qbeta(p=0.9875,shape1=1/2+r+S[3],shape2=1/2+N-(r+S[3]))
+
+  }
+
+pop.lb <- yes/N
+pop.lb
+pop.ub <- (yes+missing)/N
+pop.ub
+
+trap <- ifelse(beta.lb.lcl<pop.lb & 
+               beta.lb.ucl>pop.lb &
+               beta.ub.lcl<pop.ub & 
+               beta.ub.ucl>pop.ub,1,0)
+mean(trap)
+```
+
+* Here are the results:
+
+```Rout
+> set.seed(202)
+> 
+> yes <- 30
+> no <- 60
+> missing <- 10
+> N <- yes+no+missing
+> N
+[1] 100
+> 
+> plb <- vector()
+> pub <- vector()
+> beta.lb.lcl <- vector()
+> beta.lb.ucl <- vector()
+> beta.ub.lcl <- vector()
+> beta.ub.ucl <- vector()
+> 
+> for(i in 1:1e6){
++   S <- rmultinom(n=1,size=N,prob=c(yes/N,no/N,missing/N))
++ 
++   r <- S[1]
++   plb[i] <- r/N
++   pub[i] <- (r+S[3])/N
++ 
++   beta.lb.lcl[i] <- qbeta(p=0.0125,shape1=1/2+r,shape2=1/2+N-r)
++   beta.lb.ucl[i] <- qbeta(p=0.9875,shape1=1/2+r,shape2=1/2+N-r)
++   beta.ub.lcl[i] <- qbeta(p=0.0125,shape1=1/2+r+S[3],shape2=1/2+N-(r+S[3]))
++   beta.ub.ucl[i] <- qbeta(p=0.9875,shape1=1/2+r+S[3],shape2=1/2+N-(r+S[3]))
++ 
++   }
+> 
+> pop.lb <- yes/N
+> pop.lb
+[1] 0.3
+> pop.ub <- (yes+missing)/N
+> pop.ub
+[1] 0.4
+> 
+> trap <- ifelse(beta.lb.lcl<pop.lb & 
++                beta.lb.ucl>pop.lb &
++                beta.ub.lcl<pop.ub & 
++                beta.ub.ucl>pop.ub,1,0)
+> mean(trap)
+[1] 0.956831
+>
+```
+
+#### Event Count Data
+
+* The starting point for this analysis is a JQC paper by Osgood (2000; [link](https://link.springer.com/article/10.1023/A:1007521427059)).
+* An important issue arising in analysis of crime counts is that the outcome values are integers, there is no upper limit to the distribution, and there is a true zero value.
+* If we are looking at crime counts across geographic units such as nations, states, counties, or cities, we will encounter wide variation in the population sizes.
+* Consider the following dataset:
+
+```R
+load("d.rdata")
+
+d$region <- rep(0,nrow(d))
+d$region[d$state=="alabama"] <- 1
+d$region[d$state=="arkansas"] <- 1
+d$region[d$state=="delaware"] <- 1
+d$region[d$state=="florida"] <- 1
+d$region[d$state=="georgia"] <- 1
+d$region[d$state=="kentucky"] <- 1
+d$region[d$state=="louisiana"] <- 1
+d$region[d$state=="maryland"] <- 1
+d$region[d$state=="mississippi"] <- 1
+d$region[d$state=="north carolina"] <- 1
+d$region[d$state=="oklahoma"] <- 1
+d$region[d$state=="south carolina"] <- 1
+d$region[d$state=="tennessee"] <- 1
+d$region[d$state=="texas"] <- 1
+d$region[d$state=="virginia"] <- 1
+d$region[d$state=="west virginia"] <- 1
+
+head(d)
+
+par(mfrow=c(1,2))
+hist(d$h18)
+hist((d$h18/d$p18)*100000)
+```
+
+<p align="center">
+<img src="/gfiles/h1.png" width="750px">
+</p>
