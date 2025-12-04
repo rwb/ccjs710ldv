@@ -3110,3 +3110,9 @@ hist((d$h18/d$p18)*100000)
 <p align="center">
 <img src="/gfiles/h1.png" width="750px">
 </p>
+
+* Now, suppose we want to study how the homicide rate varies between southern states and the rest of the United States.
+* We can do this by estimating a Poisson regression model.
+
+```R
+M <- glm(h18~1+region,offset=log(p18),data=d,family=poisson)
