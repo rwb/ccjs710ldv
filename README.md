@@ -3115,4 +3115,105 @@ hist((d$h18/d$p18)*100000)
 * We can do this by estimating a Poisson regression model.
 
 ```R
+library(sandwich)
 M <- glm(h18~1+region,offset=log(p18),data=d,family=poisson)
+summary(M)
+B <- coef(M)
+stderrs1 <- sqrt(diag(vcov(M)))
+data.frame(B,stderrs1,B/stderrs1)
+V <- vcovHC(M,type="HC0")
+stderrs2 <- sqrt(diag(V))
+data.frame(B,stderrs1,B/stderrs1,stderrs2,B/stderrs2)
+mean(d$h18)
+var(d$h18)
+```
+
+* Output:
+
+```Rout
+> library(sandwich)
+> M <- glm(h18~1+region,offset=log(p18),data=d,family=poisson)
+> summary(M)
+
+Call:
+glm(formula = h18 ~ 1 + region, family = poisson, data = d, offset = log(p18))
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -9.94625    0.01015 -979.45   <2e-16 ***
+region       0.38697    0.01474   26.25   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 3264.5  on 49  degrees of freedom
+Residual deviance: 2584.4  on 48  degrees of freedom
+AIC: 2941.1
+
+Number of Fisher Scoring iterations: 4
+
+> B <- coef(M)
+> stderrs1 <- sqrt(diag(vcov(M)))
+> data.frame(B,stderrs1,B/stderrs1)
+                     B   stderrs1 B.stderrs1
+(Intercept) -9.9462513 0.01015499 -979.44503
+region       0.3869672 0.01474437   26.24509
+> V <- vcovHC(M,type="HC0")
+> stderrs2 <- sqrt(diag(V))
+> data.frame(B,stderrs1,B/stderrs1,stderrs2,B/stderrs2)
+                     B   stderrs1 B.stderrs1   stderrs2
+(Intercept) -9.9462513 0.01015499 -979.44503 0.08416004
+region       0.3869672 0.01474437   26.24509 0.11880026
+             B.stderrs2
+(Intercept) -118.182590
+region         3.257293
+> mean(d$h18)
+[1] 368.96
+> var(d$h18)
+[1] 161590.6
+>
+```
+
+* What conclusions can we draw about the difference in homicide rates between southern states and the rest of the US?
+* Let's consider two states (one in the south and one outside the south) that each have a population of 4.56M people.
+
+```R
+set.seed(387)
+library(MASS)
+sb <- mvrnorm(n=1e6,mu=B,Sigma=V)
+south.rate <- as.numeric(exp(B[1]+B[2]*1+log(4.56e6)))
+south.rate
+oth.rate <- as.numeric(exp(B[1]+B[2]*0+log(4.56e6)))
+oth.rate
+south.rate.dist <- exp(sb[,1]+sb[,2]*1+log(4.56e6))
+oth.rate.dist <- exp(sb[,1]+sb[,2]*0+log(4.56e6))
+
+# calculate a 92% confidence interval for the difference between the 2 rates
+
+quantile(south.rate.dist-oth.rate.dist,c(0.04,0.96))
+```
+
+* Output:
+
+```Rout
+> set.seed(387)
+> library(MASS)
+> sb <- mvrnorm(n=1e6,mu=B,Sigma=V)
+> south.rate <- as.numeric(exp(B[1]+B[2]*1+log(4.56e6)))
+> south.rate
+[1] 321.6774
+> oth.rate <- as.numeric(exp(B[1]+B[2]*0+log(4.56e6)))
+> oth.rate
+[1] 218.4554
+> south.rate.dist <- exp(sb[,1]+sb[,2]*1+log(4.56e6))
+> oth.rate.dist <- exp(sb[,1]+sb[,2]*0+log(4.56e6))
+> 
+> # calculate a 92% confidence interval for the difference between the 2 rates
+> 
+> quantile(south.rate.dist-oth.rate.dist,c(0.04,0.96))
+       4%       96% 
+ 47.17845 162.09461 
+>
+```
+
