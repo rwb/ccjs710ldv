@@ -3281,3 +3281,13 @@ mean(trap)
 [1] 0.9475
 >
 ```
+
+#### Practice Partial Identification Problem
+
+* Suppose we want to look at changes in murder rates for America's 300 largest police departments across two different years (we'll call them Time 1 and Time 2).
+* After collecting the data, we find that 189 police departments experienced an increase in murder rates from T1 to T2.
+* We also find that 78 police departments reported a decrease in murder rates from T1 to T2.
+* And, we see that 33 police departments were missing murder rate information at either T1 or T2 (or both). For these departments, we can't tell whether the murder rate increased or decreased.
+* You are asked to use partial identification tools to develop an estimate of the fraction of cities experiencing an increase in murder rates from T1 to T2.
+* After you obtain your estimate, you should estimate a 87% confidence interval around the bounds of your partial identification interval.
+* Write up a summary of your analysis and describe your results.
