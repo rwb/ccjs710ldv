@@ -3752,7 +3752,7 @@ nb.south.est4-nb.south.est3
 south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
 south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
 delta <- south.rate.dist.nb4-south.rate.dist.nb3
-quantile(delta,c(0.05,0.90))
+quantile(delta,c(0.05,0.95))
 ```
 
 * Here is our output:
@@ -3765,13 +3765,13 @@ quantile(delta,c(0.05,0.90))
 > nb.south.est4
 [1] 346.501
 > nb.south.est4-nb.south.est3
-[1] -7.412277
+[1] -7.412278
 > 
 > south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
 > south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
 > delta <- south.rate.dist.nb4-south.rate.dist.nb3
-> quantile(delta,c(0.05,0.90))
-       5%       90% 
--30.43153  12.85761 
+> quantile(delta,c(0.05,0.95))
+       5%       95% 
+-31.95760  20.55921 
 > 
 ```
