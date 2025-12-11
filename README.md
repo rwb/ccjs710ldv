@@ -3647,7 +3647,6 @@ mean(sub.oth$h18/sub.oth$p18)*4.56e6
 * We read in the data and add another covariate to the analysis, *i18*, which corresponds to the number of people who are undocumented immigrants estimated (by Pew) to be living in each state.
 
 ```R
-library(glmmTMB)
 library(MASS)
 
 load("d.rdata")
@@ -3672,16 +3671,18 @@ d$region[d$state=="west virginia"] <- 1
 
 d$ip18 <- (d$i18/d$p18)*100
 
-NB <- glmmTMB(h18~1+region+ip18+offset(log(p18)),family=nbinom2,data=d)
+NB <- glm.nb(h18~1+region+ip18+offset(log(p18)),data=d)
 summary(NB)
-bnb <- NB[[2]]$parfull
-vnb <- vcov(NB,full=T)
+bnb <- coef(NB)
+vnb <- vcov(NB)
 sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
 ```
 
 * Here is our output:
 
 ```Rout
+> library(MASS)
+> 
 > load("d.rdata")
 > 
 > d$region <- rep(0,nrow(d))
@@ -3704,28 +3705,39 @@ sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
 > 
 > d$ip18 <- (d$i18/d$p18)*100
 > 
-> NB <- glmmTMB(h18~1+region+ip18+offset(log(p18)),family=nbinom2,data=d)
+> NB <- glm.nb(h18~1+region+ip18+offset(log(p18)),data=d)
 > summary(NB)
- Family: nbinom2  ( log )
-Formula:          h18 ~ 1 + region + ip18 + offset(log(p18))
-Data: d
 
-      AIC       BIC    logLik -2*log(L)  df.resid 
-    601.0     608.6    -296.5     593.0        46 
+Call:
+glm.nb(formula = h18 ~ 1 + region + ip18 + offset(log(p18)), 
+    data = d, init.theta = 4.654658067, link = log)
 
-
-Dispersion parameter for nbinom2 family (): 4.65 
-
-Conditional model:
+Coefficients:
              Estimate Std. Error z value Pr(>|z|)    
-(Intercept) -10.00791    0.13560  -73.81  < 2e-16 ***
-region        0.60763    0.14227    4.27 1.95e-05 ***
-ip18         -0.02117    0.04342   -0.49    0.626    
+(Intercept) -10.00791    0.13794 -72.551  < 2e-16 ***
+region        0.60763    0.14239   4.267 1.98e-05 ***
+ip18         -0.02117    0.04574  -0.463    0.644    
 ---
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-> bnb <- NB[[2]]$parfull
-> vnb <- vcov(NB,full=T)
->
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for Negative Binomial(4.6547) family taken to be 1)
+
+    Null deviance: 71.628  on 49  degrees of freedom
+Residual deviance: 51.879  on 47  degrees of freedom
+AIC: 600.96
+
+Number of Fisher Scoring iterations: 1
+
+
+              Theta:  4.655 
+          Std. Err.:  0.947 
+
+ 2 x log-likelihood:  -592.956 
+> bnb <- coef(NB)
+> vnb <- vcov(NB)
+> sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
+> 
 ```
 
 * Now, let's explore what this implies about the effect of moving from 3% to 4% of the population in the undocumented immigrant category within the southern states.
