@@ -3282,12 +3282,102 @@ mean(trap)
 >
 ```
 
+### R Code for Thursday 12/11/25
+
 #### Practice Partial Identification Problem
 
-* Suppose we want to look at changes in murder rates for America's 300 largest police departments across two different years (we'll call them Time 1 and Time 2).
+* Suppose we want to look at changes in murder rates for America's 300 largest police departments across two different periods (we'll call them Time 1 and Time 2).
 * After collecting the data, we find that 189 police departments experienced an increase in murder rates from T1 to T2.
 * We also find that 78 police departments reported a decrease in murder rates from T1 to T2.
 * And, we see that 33 police departments were missing murder rate information at either T1 or T2 (or both). For these departments, we can't tell whether the murder rate increased or decreased.
 * You are asked to use partial identification tools to develop an estimate of the fraction of cities experiencing an increase in murder rates from T1 to T2.
 * After you obtain your estimate, you should estimate a 87% confidence interval around the bounds of your partial identification interval.
 * Write up a summary of your analysis and describe your results.
+* Solution:
+  
+```R
+# data from the problem
+
+pi.o <- (189+78)/300
+pi.o
+pi.m <- 33/300
+pi.m
+theta.o <- 189/(189+78)
+theta.o
+
+# lower bound estimate
+
+theta.m <- 0
+theta.lb <- pi.o*theta.o+pi.m*theta.m
+theta.lb
+
+# upper bound estimate
+
+theta.m <- 1
+theta.ub <- pi.o*theta.o+pi.m*theta.m
+theta.ub
+
+# B-corrected confidence interval for lower bound
+
+theta.lb.lcl <- qbeta(p=0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+theta.lb.lcl
+theta.lb.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+theta.lb.ucl
+
+# B-corrected confidence interval for upper bound
+
+theta.ub.lcl <- qbeta(p=0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+theta.ub.lcl
+theta.ub.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+theta.ub.ucl
+```
+
+* Here is the output:
+
+```Rout
+> # data from the problem
+> 
+> pi.o <- (189+78)/300
+> pi.o
+[1] 0.89
+> pi.m <- 33/300
+> pi.m
+[1] 0.11
+> theta.o <- 189/(189+78)
+> theta.o
+[1] 0.7078652
+> 
+> # lower bound estimate
+> 
+> theta.m <- 0
+> theta.lb <- pi.o*theta.o+pi.m*theta.m
+> theta.lb
+[1] 0.63
+> 
+> # upper bound estimate
+> 
+> theta.m <- 1
+> theta.ub <- pi.o*theta.o+pi.m*theta.m
+> theta.ub
+[1] 0.74
+> 
+> # B-corrected confidence interval for lower bound
+> 
+> theta.lb.lcl <- qbeta(p=0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+> theta.lb.lcl
+[1] 0.5776221
+> theta.lb.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+> theta.lb.ucl
+[1] 0.6801328
+> 
+> # B-corrected confidence interval for upper bound
+> 
+> theta.ub.lcl <- qbeta(p=0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+> theta.ub.lcl
+[1] 0.6913405
+> theta.ub.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+> theta.ub.ucl
+[1] 0.7845153
+>
+```
+
