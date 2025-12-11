@@ -3381,3 +3381,146 @@ theta.ub.ucl
 >
 ```
 
+* Compare this interval to the missing-at-random inference:
+
+```R
+theta.o <- 189/(189+78)
+theta.o
+
+lcl <- qbeta(p=0.065,shape1=1/2+189,shape2=78)
+lcl
+ucl <- qbeta(p=1-0.065,shape1=1/2+189,shape2=78)
+ucl
+```
+
+* Output:
+
+```Rout
+> theta.o <- 189/(189+78)
+> theta.o
+[1] 0.7078652
+> 
+> lcl <- qbeta(p=0.065,shape1=1/2+189,shape2=78)
+> lcl
+[1] 0.6657315
+> ucl <- qbeta(p=1-0.065,shape1=1/2+189,shape2=78)
+> ucl
+[1] 0.7497446
+>
+```
+
+* Next, let's return to the event count analysis we conducted last week using the 2018 homicide rates at the state level.
+* First, we read the dataset and create our southern region variable.
+
+```R
+library(sandwich)
+library(glmmTMB)
+library(MASS)
+
+load("d.rdata")
+
+d$region <- rep(0,nrow(d))
+d$region[d$state=="alabama"] <- 1
+d$region[d$state=="arkansas"] <- 1
+d$region[d$state=="delaware"] <- 1
+d$region[d$state=="florida"] <- 1
+d$region[d$state=="georgia"] <- 1
+d$region[d$state=="kentucky"] <- 1
+d$region[d$state=="louisiana"] <- 1
+d$region[d$state=="maryland"] <- 1
+d$region[d$state=="mississippi"] <- 1
+d$region[d$state=="north carolina"] <- 1
+d$region[d$state=="oklahoma"] <- 1
+d$region[d$state=="south carolina"] <- 1
+d$region[d$state=="tennessee"] <- 1
+d$region[d$state=="texas"] <- 1
+d$region[d$state=="virginia"] <- 1
+d$region[d$state=="west virginia"] <- 1
+```
+
+* Next, we estimate a Poisson regression with corrected standard errors:
+
+```R
+P <- glm(h18~1+region,offset=log(p18),data=d,family=poisson)
+summary(P)
+bp <- coef(P)
+se1 <- sqrt(diag(vcov(P)))
+data.frame(bp,se1,bp/se1)
+vp <- vcovHC(P,type="HC0")
+se2 <- sqrt(diag(vp))
+data.frame(bp,se1,bp/se1,se2,bp/se2)
+```
+
+* Here is our output:
+
+```Rout
+> P <- glm(h18~1+region,offset=log(p18),data=d,family=poisson)
+> summary(P)
+
+Call:
+glm(formula = h18 ~ 1 + region, family = poisson, data = d, offset = log(p18))
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -9.94625    0.01015 -979.45   <2e-16 ***
+region       0.38697    0.01474   26.25   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 3264.5  on 49  degrees of freedom
+Residual deviance: 2584.4  on 48  degrees of freedom
+AIC: 2941.1
+
+Number of Fisher Scoring iterations: 4
+
+> bp <- coef(P)
+> se1 <- sqrt(diag(vcov(P)))
+> data.frame(bp,se1,bp/se1)
+                    bp        se1     bp.se1
+(Intercept) -9.9462513 0.01015499 -979.44503
+region       0.3869672 0.01474437   26.24509
+> vp <- vcovHC(P,type="HC0")
+> se2 <- sqrt(diag(vp))
+> data.frame(bp,se1,bp/se1,se2,bp/se2)
+                    bp        se1     bp.se1        se2
+(Intercept) -9.9462513 0.01015499 -979.44503 0.08416004
+region       0.3869672 0.01474437   26.24509 0.11880026
+                 bp.se2
+(Intercept) -118.182590
+region         3.257293
+>
+```
+
+* Next, we estimate a negative binomial model:
+
+```R
+NB <- glmmTMB(h18~1+region+offset(log(p18)),family=nbinom2,data=d)
+summary(NB)
+```
+
+which gives us the following output:
+
+```Rout
+> NB <- glmmTMB(h18~1+region+offset(log(p18)),family=nbinom2,data=d)
+> summary(NB)
+ Family: nbinom2  ( log )
+Formula:          h18 ~ 1 + region + offset(log(p18))
+Data: d
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+    599.2     604.9    -296.6     593.2        47 
+
+
+Dispersion parameter for nbinom2 family (): 4.63 
+
+Conditional model:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -10.06035    0.08145 -123.52  < 2e-16 ***
+region        0.61034    0.14260    4.28 1.87e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+```
+
