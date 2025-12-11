@@ -3412,7 +3412,6 @@ ucl
 
 ```R
 library(sandwich)
-library(glmmTMB)
 library(MASS)
 
 load("d.rdata")
@@ -3494,33 +3493,45 @@ region         3.257293
 * Next, we estimate a negative binomial model:
 
 ```R
-NB <- glmmTMB(h18~1+region+offset(log(p18)),family=nbinom2,data=d)
+NB <- glm.nb(h18~1+region+offset(log(p18)),data=d)
 summary(NB)
-bnb <- NB[[2]]$parfull
-vnb <- vcov(NB,full=T)
+bnb <- coef(NB)
+vnb <- vcov(NB)
 ```
 
 which gives us the following output:
 
 ```Rout
-> NB <- glmmTMB(h18~1+region+offset(log(p18)),family=nbinom2,data=d)
+> NB <- glm.nb(h18~1+region+offset(log(p18)),data=d)
 > summary(NB)
- Family: nbinom2  ( log )
-Formula:          h18 ~ 1 + region + offset(log(p18))
-Data: d
 
-      AIC       BIC    logLik -2*log(L)  df.resid 
-    599.2     604.9    -296.6     593.2        47 
+Call:
+glm.nb(formula = h18 ~ 1 + region + offset(log(p18)), data = d, 
+    init.theta = 4.626469889, link = log)
 
-
-Dispersion parameter for nbinom2 family (): 4.63 
-
-Conditional model:
-             Estimate Std. Error z value Pr(>|z|)    
-(Intercept) -10.06035    0.08145 -123.52  < 2e-16 ***
-region        0.61034    0.14260    4.28 1.87e-05 ***
+Coefficients:
+            Estimate Std. Error  z value Pr(>|z|)    
+(Intercept) -10.0603     0.0817 -123.145  < 2e-16 ***
+region        0.6103     0.1428    4.275 1.91e-05 ***
 ---
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for Negative Binomial(4.6265) family taken to be 1)
+
+    Null deviance: 71.215  on 49  degrees of freedom
+Residual deviance: 51.815  on 48  degrees of freedom
+AIC: 599.19
+
+Number of Fisher Scoring iterations: 1
+
+
+              Theta:  4.626 
+          Std. Err.:  0.939 
+
+ 2 x log-likelihood:  -593.190 
+> bnb <- coef(NB)
+> vnb <- vcov(NB)
 >
 ```
 
