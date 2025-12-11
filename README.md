@@ -3634,3 +3634,123 @@ mean(sub.oth$h18/sub.oth$p18)*4.56e6
 ```
 
 * In this case, the negative binomial model makes predictions that are much closer to the actual values in the data.
+* Let's consider another negative binomial example.
+* We read in the data and add another covariate to the analysis, *i18*, which corresponds to the number of people who are undocumented immigrants estimated (by Pew) to be living in each state.
+
+```R
+library(glmmTMB)
+library(MASS)
+
+load("d.rdata")
+
+d$region <- rep(0,nrow(d))
+d$region[d$state=="alabama"] <- 1
+d$region[d$state=="arkansas"] <- 1
+d$region[d$state=="delaware"] <- 1
+d$region[d$state=="florida"] <- 1
+d$region[d$state=="georgia"] <- 1
+d$region[d$state=="kentucky"] <- 1
+d$region[d$state=="louisiana"] <- 1
+d$region[d$state=="maryland"] <- 1
+d$region[d$state=="mississippi"] <- 1
+d$region[d$state=="north carolina"] <- 1
+d$region[d$state=="oklahoma"] <- 1
+d$region[d$state=="south carolina"] <- 1
+d$region[d$state=="tennessee"] <- 1
+d$region[d$state=="texas"] <- 1
+d$region[d$state=="virginia"] <- 1
+d$region[d$state=="west virginia"] <- 1
+
+d$ip18 <- (d$i18/d$p18)*100
+
+NB <- glmmTMB(h18~1+region+ip18+offset(log(p18)),family=nbinom2,data=d)
+summary(NB)
+bnb <- NB[[2]]$parfull
+vnb <- vcov(NB,full=T)
+sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
+```
+
+* Here is our output:
+
+```Rout
+> load("d.rdata")
+> 
+> d$region <- rep(0,nrow(d))
+> d$region[d$state=="alabama"] <- 1
+> d$region[d$state=="arkansas"] <- 1
+> d$region[d$state=="delaware"] <- 1
+> d$region[d$state=="florida"] <- 1
+> d$region[d$state=="georgia"] <- 1
+> d$region[d$state=="kentucky"] <- 1
+> d$region[d$state=="louisiana"] <- 1
+> d$region[d$state=="maryland"] <- 1
+> d$region[d$state=="mississippi"] <- 1
+> d$region[d$state=="north carolina"] <- 1
+> d$region[d$state=="oklahoma"] <- 1
+> d$region[d$state=="south carolina"] <- 1
+> d$region[d$state=="tennessee"] <- 1
+> d$region[d$state=="texas"] <- 1
+> d$region[d$state=="virginia"] <- 1
+> d$region[d$state=="west virginia"] <- 1
+> 
+> d$ip18 <- (d$i18/d$p18)*100
+> 
+> NB <- glmmTMB(h18~1+region+ip18+offset(log(p18)),family=nbinom2,data=d)
+> summary(NB)
+ Family: nbinom2  ( log )
+Formula:          h18 ~ 1 + region + ip18 + offset(log(p18))
+Data: d
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+    601.0     608.6    -296.5     593.0        46 
+
+
+Dispersion parameter for nbinom2 family (): 4.65 
+
+Conditional model:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -10.00791    0.13560  -73.81  < 2e-16 ***
+region        0.60763    0.14227    4.27 1.95e-05 ***
+ip18         -0.02117    0.04342   -0.49    0.626    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> bnb <- NB[[2]]$parfull
+> vnb <- vcov(NB,full=T)
+>
+```
+
+* Now, let's explore what this implies about the effect of moving from 3% to 4% of the population in the undocumented immigrant category within the southern states.
+
+```R
+nb.south.est3 <- as.numeric(exp(bnb[1]+bnb[2]*1+bnb[3]*3+log(4.56e6)))
+nb.south.est3
+nb.south.est4 <- as.numeric(exp(bnb[1]+bnb[2]*1+bnb[3]*4+log(4.56e6)))
+nb.south.est4
+nb.south.est4-nb.south.est3
+
+south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
+south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
+delta <- south.rate.dist.nb4-south.rate.dist.nb3
+quantile(delta,c(0.05,0.90))
+```
+
+* Here is our output:
+
+```Rout
+> nb.south.est3 <- as.numeric(exp(bnb[1]+bnb[2]*1+bnb[3]*3+log(4.56e6)))
+> nb.south.est3
+[1] 353.9133
+> nb.south.est4 <- as.numeric(exp(bnb[1]+bnb[2]*1+bnb[3]*4+log(4.56e6)))
+> nb.south.est4
+[1] 346.501
+> nb.south.est4-nb.south.est3
+[1] -7.412277
+> 
+> south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
+> south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
+> delta <- south.rate.dist.nb4-south.rate.dist.nb3
+> quantile(delta,c(0.05,0.90))
+       5%       90% 
+-30.43153  12.85761 
+> 
+```
