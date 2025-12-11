@@ -3319,24 +3319,22 @@ theta.ub
 
 # B-corrected confidence interval for lower bound
 
-theta.lb.lcl <- qbeta(p=0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+theta.lb.lcl <- qbeta(p=0.0325,shape1=1/2+189,shape2=1/2+300-189)
 theta.lb.lcl
-theta.lb.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+theta.lb.ucl <- qbeta(p=0.9675,shape1=1/2+189,shape2=1/2+300-189)
 theta.lb.ucl
 
 # B-corrected confidence interval for upper bound
 
-theta.ub.lcl <- qbeta(p=0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+theta.ub.lcl <- qbeta(p=0.0325,shape1=1/2+189+33,shape2=1/2+300-189-33)
 theta.ub.lcl
-theta.ub.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+theta.ub.ucl <- qbeta(p=0.9675,shape1=1/2+189+33,shape2=1/2+300-189-33)
 theta.ub.ucl
 ```
 
 * Here is the output:
 
 ```Rout
-> # data from the problem
-> 
 > pi.o <- (189+78)/300
 > pi.o
 [1] 0.89
@@ -3363,22 +3361,22 @@ theta.ub.ucl
 > 
 > # B-corrected confidence interval for lower bound
 > 
-> theta.lb.lcl <- qbeta(p=0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+> theta.lb.lcl <- qbeta(p=0.0325,shape1=1/2+189,shape2=1/2+300-189)
 > theta.lb.lcl
 [1] 0.5776221
-> theta.lb.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189,shape2=1/2+300-189)
+> theta.lb.ucl <- qbeta(p=0.9675,shape1=1/2+189,shape2=1/2+300-189)
 > theta.lb.ucl
 [1] 0.6801328
 > 
 > # B-corrected confidence interval for upper bound
 > 
-> theta.ub.lcl <- qbeta(p=0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+> theta.ub.lcl <- qbeta(p=0.0325,shape1=1/2+189+33,shape2=1/2+300-189-33)
 > theta.ub.lcl
 [1] 0.6913405
-> theta.ub.ucl <- qbeta(p=1-0.065/2,shape1=1/2+189+33,shape2=1/2+300-189-33)
+> theta.ub.ucl <- qbeta(p=0.9675,shape1=1/2+189+33,shape2=1/2+300-189-33)
 > theta.ub.ucl
 [1] 0.7845153
->
+> 
 ```
 
 * Compare this interval to the missing-at-random inference:
