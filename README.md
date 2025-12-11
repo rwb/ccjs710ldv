@@ -3498,6 +3498,8 @@ region         3.257293
 ```R
 NB <- glmmTMB(h18~1+region+offset(log(p18)),family=nbinom2,data=d)
 summary(NB)
+bnb <- NB[[2]]$parfull
+vnb <- vcov(NB,full=T)
 ```
 
 which gives us the following output:
@@ -3524,3 +3526,111 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 >
 ```
 
+* Now, we interpret the results from both models:
+
+```R
+sbp <- mvrnorm(n=1e6,mu=bp,Sigma=vp)
+sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
+
+poisson.south.est <- as.numeric(exp(bp[1]+bp[2]*1+log(4.56e6)))
+poisson.south.est
+poisson.oth.est <- as.numeric(exp(bp[1]+bp[2]*0+log(4.56e6)))
+poisson.oth.est
+
+nb.south.est <- as.numeric(exp(bnb[1]+bnb[2]*1+log(4.56e6)))
+nb.south.est
+nb.oth.est <- as.numeric(exp(bnb[1]+bnb[2]*0+log(4.56e6)))
+nb.oth.est
+
+south.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*1+log(4.56e6))
+oth.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*0+log(4.56e6))
+
+# 90% confidence interval for the difference
+
+delta.poisson <- south.rate.dist.poisson-oth.rate.dist.poisson
+quantile(delta.poisson,c(0.05,0.95))
+
+south.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*1+log(4.56e6))
+oth.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*0+log(4.56e6))
+
+# 90% confidence interval for the difference
+
+delta.nb <- south.rate.dist.nb-oth.rate.dist.nb
+quantile(delta.nb,c(0.05,0.95))
+```
+
+* Here is our output:
+
+```Rout
+> sbp <- mvrnorm(n=1e6,mu=bp,Sigma=vp)
+> sbnb <- mvrnorm(n=1e6,mu=bnb,Sigma=vnb)
+> 
+> poisson.south.est <- as.numeric(exp(bp[1]+bp[2]*1+log(4.56e6)))
+> poisson.south.est
+[1] 321.6774
+> poisson.oth.est <- as.numeric(exp(bp[1]+bp[2]*0+log(4.56e6)))
+> poisson.oth.est
+[1] 218.4554
+> 
+> nb.south.est <- as.numeric(exp(bnb[1]+bnb[2]*1+log(4.56e6)))
+> nb.south.est
+[1] 358.8224
+> nb.oth.est <- as.numeric(exp(bnb[1]+bnb[2]*0+log(4.56e6)))
+> nb.oth.est
+[1] 194.8994
+> 
+> south.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*1+log(4.56e6))
+> oth.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*0+log(4.56e6))
+> 
+> # 90% confidence interval for the difference
+> 
+> delta.poisson <- south.rate.dist.poisson-oth.rate.dist.poisson
+> quantile(delta.poisson,c(0.05,0.95))
+       5%       95% 
+ 50.52698 158.35029 
+> 
+> south.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*1+log(4.56e6))
+> oth.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*0+log(4.56e6))
+> 
+> # 90% confidence interval for the difference
+> 
+> delta.nb <- south.rate.dist.nb-oth.rate.dist.nb
+> quantile(delta.nb,c(0.05,0.95))
+       5%       95% 
+ 95.03417 243.61524 
+>
+```
+
+* In this instance, the Poisson and negative binomial models look like they're converging on somewhat different answers.
+* Based on the Poisson model, the point estimate for the difference between southern and non-southern states is 321.6774-218.4554 = 103.22 homicides per 4.56M population.
+* The 90% confidence interval for the difference between southern and non-southern states is [50.567,158.350].
+* Based on the negative binomial model, the point estimate for the difference between southern and non-southern states is 358.8224-194.8994 = 163.923 homicides per 4.56M population.
+* The 90% confidence interval for this difference is [95.034,243.615].
+* One way to approach this difference is to look at the raw data:
+
+```R
+sub.south <- subset(d,region==1)
+sub.oth <- subset(d,region==0)
+nrow(sub.south)
+nrow(sub.oth)
+mean(sub.south$h18/sub.south$p18)*4.56e6
+mean(sub.oth$h18/sub.oth$p18)*4.56e6
+```
+
+* Here is the output:
+
+```Rout
+> sub.south <- subset(d,region==1)
+> sub.oth <- subset(d,region==0)
+> nrow(sub.south)
+[1] 16
+> nrow(sub.oth)
+[1] 34
+> mean(sub.south$h18/sub.south$p18)*4.56e6
+[1] 358.6592
+> mean(sub.oth$h18/sub.oth$p18)*4.56e6
+[1] 193.5622
+>
+```
+
+* In this case, the negative binomial model makes predictions that are much closer to the actual values in the data.
