@@ -3317,14 +3317,14 @@ theta.m <- 1
 theta.ub <- pi.o*theta.o+pi.m*theta.m
 theta.ub
 
-# B-corrected confidence interval for lower bound
+# Bonferroni-corrected 87% confidence interval for lower bound
 
 theta.lb.lcl <- qbeta(p=0.0325,shape1=1/2+189,shape2=1/2+300-189)
 theta.lb.lcl
 theta.lb.ucl <- qbeta(p=0.9675,shape1=1/2+189,shape2=1/2+300-189)
 theta.lb.ucl
 
-# B-corrected confidence interval for upper bound
+# Bonferroni-corrected 87% confidence interval for upper bound
 
 theta.ub.lcl <- qbeta(p=0.0325,shape1=1/2+189+33,shape2=1/2+300-189-33)
 theta.ub.lcl
@@ -3359,7 +3359,7 @@ theta.ub.ucl
 > theta.ub
 [1] 0.74
 > 
-> # B-corrected confidence interval for lower bound
+> # Bonferroni-corrected 87% confidence interval for lower bound
 > 
 > theta.lb.lcl <- qbeta(p=0.0325,shape1=1/2+189,shape2=1/2+300-189)
 > theta.lb.lcl
@@ -3368,7 +3368,7 @@ theta.ub.ucl
 > theta.lb.ucl
 [1] 0.6801328
 > 
-> # B-corrected confidence interval for upper bound
+> # Bonferroni-corrected 87% confidence interval for upper bound
 > 
 > theta.ub.lcl <- qbeta(p=0.0325,shape1=1/2+189+33,shape2=1/2+300-189-33)
 > theta.ub.lcl
