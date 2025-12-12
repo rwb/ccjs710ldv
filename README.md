@@ -3551,6 +3551,9 @@ nb.south.est
 nb.oth.est <- as.numeric(exp(bnb[1]+bnb[2]*0+log(4.56e6)))
 nb.oth.est
 
+# estimate distribution of expected homicide rates per 4.56M population
+# for southern and non-southern states -- based on the Poisson model
+
 south.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*1+log(4.56e6))
 oth.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*0+log(4.56e6))
 
@@ -3558,6 +3561,9 @@ oth.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*0+log(4.56e6))
 
 delta.poisson <- south.rate.dist.poisson-oth.rate.dist.poisson
 quantile(delta.poisson,c(0.05,0.95))
+
+# estimate distribution of expected homicide rates per 4.56M population
+# for southern and non-southern states -- based on the negative binomial model
 
 south.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*1+log(4.56e6))
 oth.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*0+log(4.56e6))
@@ -3588,6 +3594,9 @@ quantile(delta.nb,c(0.05,0.95))
 > nb.oth.est
 [1] 194.8994
 > 
+> # estimate distribution of expected homicide rates per 4.56M population
+> # for southern and non-southern states -- based on the Poisson model
+> 
 > south.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*1+log(4.56e6))
 > oth.rate.dist.poisson <- exp(sbp[,1]+sbp[,2]*0+log(4.56e6))
 > 
@@ -3595,8 +3604,11 @@ quantile(delta.nb,c(0.05,0.95))
 > 
 > delta.poisson <- south.rate.dist.poisson-oth.rate.dist.poisson
 > quantile(delta.poisson,c(0.05,0.95))
-       5%       95% 
- 50.52698 158.35029 
+      5%      95% 
+ 50.4918 158.4249 
+> 
+> # estimate distribution of expected homicide rates per 4.56M population
+> # for southern and non-southern states -- based on the negative binomial model
 > 
 > south.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*1+log(4.56e6))
 > oth.rate.dist.nb <- exp(sbnb[,1]+sbnb[,2]*0+log(4.56e6))
@@ -3605,9 +3617,9 @@ quantile(delta.nb,c(0.05,0.95))
 > 
 > delta.nb <- south.rate.dist.nb-oth.rate.dist.nb
 > quantile(delta.nb,c(0.05,0.95))
-       5%       95% 
- 95.03417 243.61524 
->
+      5%      95% 
+ 94.8962 243.6295 
+> 
 ```
 
 * In this instance, the Poisson and negative binomial models look like they're converging on somewhat different answers.
