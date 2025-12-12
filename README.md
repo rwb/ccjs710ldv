@@ -3764,6 +3764,9 @@ nb.south.est4-nb.south.est3
 south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
 south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
 delta <- south.rate.dist.nb4-south.rate.dist.nb3
+
+# gives a 90% confidence interval for the difference
+
 quantile(delta,c(0.05,0.95))
 ```
 
@@ -3782,6 +3785,9 @@ quantile(delta,c(0.05,0.95))
 > south.rate.dist.nb3 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*3+log(4.56e6))
 > south.rate.dist.nb4 <- exp(sbnb[,1]+sbnb[,2]*1+sbnb[,3]*4+log(4.56e6))
 > delta <- south.rate.dist.nb4-south.rate.dist.nb3
+>
+> # gives a 90% confidence interval for the difference
+>
 > quantile(delta,c(0.05,0.95))
        5%       95% 
 -31.95760  20.55921 
