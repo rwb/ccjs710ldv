@@ -3787,3 +3787,27 @@ quantile(delta,c(0.05,0.95))
 -31.95760  20.55921 
 > 
 ```
+
+### Final Exam - Due Friday 12/19/25 at 5pm.
+
+Instructions: Please double-check your work before submitting your exam. I will not be accepting any exams until Friday 12/19/25 (this is different than what I said in class last night; the problem that occurred to me is that someone might ask a question and the answer to that question might change the way you approach the exam). So, I will accept questions on the exam up until 9pm (ET) on Thursday 12/18/25. After that point, I will not be able to accept any more questions (although you are free to write any questions or concerns you have on the exam and I will read and respond to them when I am grading your exam). You are welcome to submit your exam anytime on Friday 12/19/25 up until the time it is due at 5pm. You should email me a single pdf file containing all of your exam and supporting work. The more organized and clear your presentation is, the faster I can grade all of the exams so please keep neatness and organization in mind. You should not give or receive any unauthorized assistance on this exam. This means the work you submit should be your own work. Please remember to show all of your intermediate calculations and steps so I can give you partial credit. Good luck!
+
+1. Suppose we study the administrative records of a group of a random sample of 187 people released from the state prison 5 years ago. Our goal in reviewing the administrative records is to determine what fraction of the released people were rearrested for a new crime within a 5-year time frame. Based on our review of the administrative records, we find that 122 people were definitely rearrested; we also find that 35 people were definitely not rearrested. A complication is that the records were incomplete for the remaining 30 people so we are not able to determine whether they were rearrested. 
+
+* a. You are asked to use partial identification tools to develop an interval estimate of the fraction of people who were rearrested (10pts).
+* b. After you obtain your estimate, you should estimate a 85% confidence interval around the bounds of your partial identification interval (you can use the bootstrap, the Clopper-Pearson approach, or the Jeffreys prior approach -- whichever you prefer); (10pts).
+* c. Write up a summary of your analysis and describe your results (5pts).
+* d. Compare your partial identification results to the results of a missing-at-random analysis (i.e., presenting the missing-at-random estimate and its confidence interval) (5pts).
+
+2. Load the homicide dataset we've been considering for the study of event counts. Then, carry out each of the following tasks:
+
+* a. Estimate a Poisson regression model where h20 is the outcome variable and region is the independent variable. Make sure you specify the 2020 population size for each state as an offset term (5pts).
+* b. Based on the Poisson regression model, estimate the number of homicides per 1 million population for states in the southern region; then estimate the number of homicides per 1 million population for states that are not in the southern region. What is the difference between the 2 rates? (5pts).
+* c. Calculate a 92% confidence interval for each of the 2 rates you estimated in part b. (10pts).
+* d. Using simulations from the multivariate normal distribution based on the Poisson regression model, calculate a 92% confidence interval for the difference between the 2 rates you calculated in part b. Test the null hypothesis that the population difference between the 2 rates is equal to zero. What do you conclude? (10pts)
+* e. Estimate a negative binomial regression model with the same specification you used for the Poisson regression (i.e., h20 is the outcome variable, region is the independent variable, and adjust for population size); (5pts).
+* f. Based on the negative binomial regression model, estimate the number of homicides per 1 million population for states in the southern region; then estimate the number of homicides per 1 million population for states that are not in the southern region. What is the difference between the 2 rates? (5pts).
+Calculate a 92% confidence interval for each of the 2 rates you estimated in part b. (10pts).
+* g. Using simulations from the multivariate normal distribution based on the negative binomial regression model, calculate a 92% confidence interval for the difference between the 2 rates you calculated in part f. Test the null hypothesis that the population difference between the 2 rates is equal to zero. What do you conclude? (10pts)
+* h. Estimate a negative binomial regression using the 2020 homicide rate as an outcome variable and region and the percent of the population that is an undocumented immigrant (in 2020) are independent variables; use the state population size as an offset variable (5pts).
+* i. For the non-southern region states and states where 3.5% of the population is considered to be an undocumented immigrant, estimate the number of homicides per 1 million population along with a 92% confidence interval around the estimate (5pts).
