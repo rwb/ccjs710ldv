@@ -3807,7 +3807,7 @@ Instructions: Please double-check your work before submitting your exam. I will 
 
 2. Load the homicide dataset we've been considering for the study of event counts. Then, carry out each of the following tasks:
 
-* a. Estimate a Poisson regression model where h20 is the outcome variable and region is the independent variable. Make sure you specify the 2020 population size for each state as an offset term (5pts).
+* a. Estimate a Poisson regression model where h21 is the outcome variable and region is the independent variable. Make sure you specify the 2021 population size for each state as an offset term (5pts).
 * b. Based on the Poisson regression model, estimate the number of homicides per 1 million population for states in the southern region; then estimate the number of homicides per 1 million population for states that are not in the southern region. What is the difference between the 2 rates? (5pts).
 * c. Calculate a 92% confidence interval for each of the 2 rates you estimated in part b. (10pts).
 * d. Using simulations from the multivariate normal distribution based on the Poisson regression model, calculate a 92% confidence interval for the difference between the 2 rates you calculated in part b. Test the null hypothesis that the population difference between the 2 rates is equal to zero. What do you conclude? (10pts)
@@ -3815,5 +3815,5 @@ Instructions: Please double-check your work before submitting your exam. I will 
 * f. Based on the negative binomial regression model, estimate the number of homicides per 1 million population for states in the southern region; then estimate the number of homicides per 1 million population for states that are not in the southern region. What is the difference between the 2 rates? (5pts).
 Calculate a 92% confidence interval for each of the 2 rates you estimated in part b. (10pts).
 * g. Using simulations from the multivariate normal distribution based on the negative binomial regression model, calculate a 92% confidence interval for the difference between the 2 rates you calculated in part f. Test the null hypothesis that the population difference between the 2 rates is equal to zero. What do you conclude? (10pts)
-* h. Estimate a negative binomial regression using the 2020 homicide rate as an outcome variable and region and the percent of the population that is an undocumented immigrant (in 2020) are independent variables; use the state population size as an offset variable (5pts).
+* h. Estimate a negative binomial regression using the 2021 homicide rate as an outcome variable and region and the percent of the population that is an undocumented immigrant (in 2021) are independent variables; use the state population size as an offset variable (5pts).
 * i. For the non-southern region states and states where 3.5% of the population is considered to be an undocumented immigrant, estimate the number of homicides per 1 million population along with a 92% confidence interval around the estimate (5pts).
